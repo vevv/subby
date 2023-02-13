@@ -19,7 +19,7 @@ file = Path('test.vtt')
 # All statements below are equivalent
 srt = converter.from_file(file)
 srt = converter.from_string(file.read_text())
-srt = converter.from_bytes(file.read_text())
+srt = converter.from_bytes(file.read_bytes())
 
 # srt is pysrt.SubRipFile
 ```
@@ -34,7 +34,7 @@ file = Path('test.vtt')
 # All statements below are equivalent
 srt, status = converter.from_file(file)
 srt, status = converter.from_string(file.read_text())
-srt, status = converter.from_bytes(file.read_text())
+srt, status = converter.from_bytes(file.read_bytes())
 
 # srt is pysrt.SubRipFile, status is bool
 ```
