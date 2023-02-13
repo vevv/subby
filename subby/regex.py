@@ -1,0 +1,12 @@
+TAGS = r'[<{][/\\]?[a-z0-9.]+[}>]'
+FRONT_OPTIONAL_TAGS_WITH_HYPHEN = rf'^\s*({TAGS})?\s*-?\s*({TAGS})?'
+TIME_LOOKAHEAD = r'(?![0-9]{2})'
+
+DESCRIPTION = r'[\[(](?:[^\]\)]|\s)*[)\]]'
+FULL_LINE_DESCIRPTION = rf'^-?\s*{DESCRIPTION}$'
+NEW_LINE_DESCRIPTION = rf'^(?:{TAGS})?-?\s*{DESCRIPTION}(?:{TAGS})?$'
+FRONT_DESCRIPTION = rf'^({FRONT_OPTIONAL_TAGS_WITH_HYPHEN}){DESCRIPTION}:?'
+END_DESCRIPTION = rf'\s*{DESCRIPTION}\s*$'
+INLINE_DESCRIPTION = r'[\[(][A-Z]+[)\]]'
+SPEAKER = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*([A-Z0-9\&\[\]\.# ]+\s*|[A-Z][a-z]+):{TIME_LOOKAHEAD} ?'
+SPEAKER_PARENTHESES = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(?:[A-Z0-9\.# ]+\s*|[A-Z][a-z]+)(?: \([a-zA-Z ]+\)): ?'
