@@ -74,7 +74,7 @@ stripper = SDHStripper()
 file = Path('file.vtt')
 file_sdh = Path('file_sdh.srt')
 file_stripped = Path('file_stripped.srt')
-srt = fixer.from_srt(converter.from_file(file))
+srt, _ = fixer.from_srt(converter.from_file(file))
 
 srt.save(file_sdh)
 # saved to file_sdh.srt
