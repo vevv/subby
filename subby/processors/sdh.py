@@ -11,10 +11,10 @@ from subby.processors.base import BaseProcessor
 class SDHStripper(BaseProcessor):
     """Processor removing hard-of-hearing descriptions from subtitles"""
 
-    def __init__(self, extra_regexes: list[str]):
+    def __init__(self, extra_regexes: list[str] | None = None):
         self.extra_regexes = [
             re.compile(regex, re.MULTILINE)
-            for regex in extra_regexes
+            for regex in extra_regexes or []
         ]
 
     def process(self, srt):
