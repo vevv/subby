@@ -76,7 +76,7 @@ file_sdh = Path('file_sdh.srt')
 file_stripped = Path('file_stripped.srt')
 srt = fixer.from_srt(converter.from_file(file))
 
-stripped.save(file_sdh)
+srt.save(file_sdh)
 # saved to file_sdh.srt
 
 stripped, status = stripper.from_srt(srt)
