@@ -20,6 +20,7 @@ pip install .```
 ## Converter
 ```py
 from subby import WebVTTConverter
+from pathlib import Path
 
 converter = WebVTTConverter()
 file = Path('test.vtt')
@@ -41,6 +42,7 @@ Processor returns a bool indicating success - whether any changes were made, use
 
 ```py
 from subby import CommonIssuesFixer
+from pathlib import Path
 
 processor = CommonIssuesFixer()
 file = Path('test.vtt')
@@ -62,6 +64,7 @@ The following example will convert a VTT file, attempt to strip SDH, and then sa
 
 ```py
 from subby import WebVTTConverter, CommonIssuesFixer, SDHStripper
+from pathlib import Path
 
 converter = WebVTTConverter()
 fixer = CommonIssuesFixer()
