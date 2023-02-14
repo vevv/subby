@@ -14,7 +14,8 @@ WebVTT, DFXP/TTML/TTML2/SMPTE, SAMI, WVTT (WebVTT in MP4), STPP/ISMT (DFXP in MP
 ```
 git clone https://github.com/vevv/subby
 cd subby
-pip install .```
+pip install .
+```
 
 # Usage
 ## Converter
