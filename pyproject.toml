@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "subby"
-version = "0.1.0"
+version = "0.1.1"
 description = "Advanced subtitle converter and processor"
 authors = ["vevv"]
 license = "GPL-3.0-or-later"
@@ -11,6 +11,7 @@ repository = "https://github.com/vevv/subby"
 python = "^3.8"
 pymp4 = {git = "https://github.com/truedread/pymp4"}
 beautifulsoup4 = "^4.11.2"
+pysrt = "^1.1.2"
 
 [tool.poetry.group.dev.dependencies]
 pysrt = "^1.1.2"
