@@ -87,6 +87,10 @@ remove 2 frame gap between this
 20
 00:19:00,183 --> 00:19:01,000
 and that line
+
+21
+00:20:00,000 --> 00:20:01,000
+♪ <i>Fire</i>♪
 ''')
 
 # Test correct musical note conversion
@@ -100,6 +104,7 @@ assert srt[6].text == '♪ Song Lyrics\nOn two separate lines ♪'
 assert srt[7].text == '#1 Radio Station'
 assert srt[8].text == 'ABCD FM\n#1 Radio Station'
 assert srt[9].text == '#One Radio Station'
+assert srt[20].text == '<i>♪ Fire ♪</i>'
 
 # Test adding missing line breaks
 assert srt[10].text == "- It's chocolate.\n- Hmm?"
