@@ -50,7 +50,7 @@ class CommonIssuesFixer(BaseProcessor):
             )
             # Move notes into italics, if rest of the line is
             line = re.sub(r'♪ <i>(.*)', r'<i>♪ \1', line)
-            line = re.sub(r'♪(.*)</i> ♪', r'\1 ♪</i>', line)
+            line = re.sub(r'(♪.*)</i>\s*♪', r'\1 ♪</i>', line)
             # Replace some pound signs with notes (Binge...)
             # (Matches only start/end of a line with a space
             # to avoid false positives)
