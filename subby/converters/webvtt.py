@@ -44,7 +44,7 @@ class WebVTTConverter(BaseConverter):
             # Check for time line
             elif '-->' in line:
                 parts = line.strip().split()
-                position = self._get_position(parts[3:])
+                position = self._get_position([p for p in parts[3:] if ':' in p])
 
                 start, _, end, *_ = parts
                 # Fix short timecodes (no hour)
