@@ -165,27 +165,6 @@ class CommonIssuesFixer(BaseProcessor):
             line.text = _fix_line(line.text)
             line.text = line.text.strip()
 
-        srt = self._combine_timecodes(srt)
-        # Merge "flowing" lines from EIA-608 converted subs
-        # Example:
-        # Line 1: "This is an example text 1,
-        #         "this is an example text 2."
-        # Line 2: "this is an example text 2."
-        #         "This is an example text 3"
-        for num, line in enumerate(srt):
-            if not 0 < num + 1 < len(srt):
-                continue
-            if '\n' not in line.text \
-                    or self._subtract_ts(line.end, srt[num + 1].start) > 2500:
-                continue
-
-            line_end = line.text.split('\n')[-1]
-            next_line_start = srt[num + 1].text.split('\n')[0]
-            offset = line.text.index(line_end)
-
-            if line_end == next_line_start:
-                line.text = line.text[:offset].strip()
-
             # Remove remaining linebreaks
             line.text = line.text.strip('\n')
 
