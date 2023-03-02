@@ -134,6 +134,8 @@ class CommonIssuesFixer(BaseProcessor):
             line = re.sub(r'\s*--(\s*)', r'--\1', line, flags=re.M)
             # Move notes inside tags (</i> ♪ -> </i>)
             line = re.sub(r'(</[a-z]>)(\s*♪{1,})$', r'\2\1', line, flags=re.M)
+            # Remove trailing spaces
+            line = re.sub(r' +$', r'', line, flags=re.M).strip()
 
             # [LINE SPLITS AND LINE BREAKS]
             #

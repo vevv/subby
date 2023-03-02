@@ -91,6 +91,12 @@ and that line
 21
 00:20:00,000 --> 00:20:01,000
 ♪ <i>Fire</i>♪
+
+22
+00:21:00,000 --> 00:21:01,000
+<i>SOMETHING:</i> <i>
+Synthetic test.</i> <i>
+Definitely not real.</i>
 ''')
 
 # Test correct musical note conversion
@@ -122,3 +128,6 @@ assert srt[17].text == "<i>test</i>"
 
 # Test 83 ms gap removal
 assert srt[18].end == srt[19].start == pysrt.SubRipTime(minutes=19, milliseconds=100)
+
+# Test redundant space removal
+assert srt[21].text == "<i>SOMETHING:\nSynthetic test.\nDefinitely not real.</i>"
