@@ -34,7 +34,10 @@ class SDHStripper(BaseProcessor):
         """Removes full line descriptions"""
         for line in srt:
             text = self._strip_tags(line.text)
-            if not re.sub(Regex.FULL_LINE_DESCIRPTION, r'', text, flags=re.M).strip():
+            for regex in (Regex.FULL_LINE_DESCIRPTION_BRACKET, Regex.FULL_LINE_DESCIRPTION_PARENTHESES):
+                text = re.sub(regex, r'', text, flags=re.M).strip()
+
+            if not text:
                 continue
 
             yield line
@@ -42,14 +45,20 @@ class SDHStripper(BaseProcessor):
     def _clean_new_line_descriptions(self, srt):
         """Removes line descriptions taking up an entire line break"""
         for line in srt:
-            line.text = re.sub(Regex.NEW_LINE_DESCRIPTION, r'', line.text, flags=re.M).strip()
+            for regex in (Regex.NEW_LINE_DESCRIPTION_BRACKET, Regex.NEW_LINE_DESCRIPTION_PARENTHESES):
+                line.text = re.sub(regex, r'', line.text, flags=re.M).strip()
             yield line
 
     def _clean_inline_descriptions(self, srt):
         """Removes inline"""
         for line in srt:
-            line.text = re.sub(Regex.FRONT_DESCRIPTION, r'\1', line.text, flags=re.M)
-            for regex in (Regex.END_DESCRIPTION, Regex.INLINE_DESCRIPTION):
+            for regex in (Regex.FRONT_DESCRIPTION_BRACKET, Regex.FRONT_DESCRIPTION_PARENTHESES):
+                line.text = re.sub(regex, r'\1', line.text, flags=re.M)
+            for regex in (
+                Regex.END_DESCRIPTION_BRACKET,
+                Regex.END_DESCRIPTION_PARENTHESES,
+                Regex.INLINE_DESCRIPTION
+            ):
                 line.text = re.sub(regex, r'', line.text, flags=re.M)
             line.text = line.text.strip()
             yield line
@@ -58,8 +67,8 @@ class SDHStripper(BaseProcessor):
         """Removes speaker names"""
         for line in srt:
             # Retain frontal tags/hyphens
-            line.text = re.sub(Regex.SPEAKER_PARENTHESES, r'\2', line.text, flags=re.M).strip()
-            line.text = re.sub(Regex.SPEAKER, r'\1', line.text, flags=re.M).strip()
+            for regex in (Regex.SPEAKER_PARENTHESES, Regex.SPEAKER):
+                line.text = re.sub(regex, r'\2', line.text, flags=re.M).strip()
             yield line
 
     def _strip_notes(self, srt):
