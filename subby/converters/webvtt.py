@@ -43,11 +43,15 @@ class WebVTTConverter(BaseConverter):
                 if looking_for_style:
                     stylesheet = css_parser.parse_stylesheet('\n'.join(current_style))
                     for rule in stylesheet.rules:
-                        ft = next(e for e in rule.selector if e.type == 'FUNCTION')
-                        name = next(t for t in ft.content if t.type == 'IDENT').value
-                        styles[name] = {}
+                        ft = next((e for e in rule.selector if e.type == 'FUNCTION'), None)
+                        if not ft:
+                            continue
+                        name = next((t for t in ft.content if t.type == 'IDENT'), None)
+                        if not name:
+                            continue
+                        styles[name.value] = {}
                         for dec in rule.declarations:
-                            styles[name][dec.name] = dec.value.as_css()
+                            styles[name.value][dec.name] = dec.value.as_css()
 
                     looking_for_style = False
 
