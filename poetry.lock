@@ -32,7 +32,7 @@ python-versions = "*"
 [[package]]
 name = "pymp4"
 version = "1.5.0"
-description = ""
+description = "A Python parser for MP4 boxes"
 category = "main"
 optional = false
 python-versions = "*"
@@ -66,10 +66,21 @@ category = "main"
 optional = false
 python-versions = ">=3.7"
 
+[[package]]
+name = "tinycss"
+version = "0.4"
+description = "tinycss is a complete yet simple CSS parser for Python."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+test = ["pytest-cov", "pytest-flake8", "pytest-isort", "pytest-runner"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "22044d77a7af4e79a02171101c1f9d61b845947bcc9ef391ca860f5dd8147f1b"
+content-hash = "c9ffca23d29cd7d848d2b99084c50272c33fbcf8f575a9201ba74d71e63c2d7b"
 
 [metadata.files]
 beautifulsoup4 = [
@@ -90,4 +101,7 @@ pysrt = [
 soupsieve = [
     {file = "soupsieve-2.4-py3-none-any.whl", hash = "sha256:49e5368c2cda80ee7e84da9dbe3e110b70a4575f196efb74e51b94549d921955"},
     {file = "soupsieve-2.4.tar.gz", hash = "sha256:e28dba9ca6c7c00173e34e4ba57448f0688bb681b7c5e8bf4971daafc093d69a"},
+]
+tinycss = [
+    {file = "tinycss-0.4.tar.gz", hash = "sha256:12306fb50e5e9e7eaeef84b802ed877488ba80e35c672867f548c0924a76716e"},
 ]

@@ -5,11 +5,13 @@ import re
 from typing import Optional
 
 import pysrt
+import tinycss
 
 from subby.converters.base import BaseConverter
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
-SKIP_WORDS = ('WEBVTT', 'NOTE', 'STYLE', '/*')
+STYLE_TAG = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)<\/c>$')
+SKIP_WORDS = ('WEBVTT', 'NOTE', '/*')
 
 
 class WebVTTConverter(BaseConverter):
@@ -18,9 +20,14 @@ class WebVTTConverter(BaseConverter):
     def parse(self, stream):
         srt = pysrt.SubRipFile()
         looking_for_text = False
+        looking_for_style = False
         text = []
         position = None
         line_number: int = 1
+        styles = {}
+        current_style = []
+
+        css_parser = tinycss.make_parser('page3')
 
         for line in stream:
             # As our stream is bytes we have to deal with line breaks here
@@ -32,6 +39,18 @@ class WebVTTConverter(BaseConverter):
 
             # Empty line separates cues
             if line == '':
+                # Parse current style
+                if looking_for_style:
+                    stylesheet = css_parser.parse_stylesheet('\n'.join(current_style))
+                    for rule in stylesheet.rules:
+                        ft = next(e for e in rule.selector if e.type == 'FUNCTION')
+                        name = next(t for t in ft.content if t.type == 'IDENT').value
+                        styles[name] = {}
+                        for dec in rule.declarations:
+                            styles[name][dec.name] = dec.value.as_css()
+
+                    looking_for_style = False
+
                 # Keep looking for text if last line has none
                 # this will only happen if there's an unexpected line break
                 if not text:
@@ -40,6 +59,14 @@ class WebVTTConverter(BaseConverter):
                 srt[-1].text = '\n'.join(text)
                 text = []
                 looking_for_text = False
+
+            # Check for style start
+            elif 'STYLE' in line:
+                looking_for_style = True
+
+            # Check for style content
+            elif looking_for_style:
+                current_style.append(line)
 
             # Check for time line
             elif '-->' in line:
@@ -63,8 +90,15 @@ class WebVTTConverter(BaseConverter):
 
             # Append text if we're inside a line
             elif looking_for_text:
-                # Unescape html entities, and strip non-italic tags
+                # Unescape html entities
                 line = html.unescape(line)
+
+                # Parse styles
+                if m := re.match(STYLE_TAG, line):
+                    if (s := styles.get(m[1])) and s.get('font-style') == 'italic':
+                        line = f'<i>{m[2]}</i>'
+
+                # Strip non-italic tags
                 line = re.sub(HTML_TAG, '', line)
 
                 # Set \an8 tag if position is below 25
