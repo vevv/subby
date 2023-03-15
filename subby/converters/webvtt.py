@@ -69,7 +69,7 @@ class WebVTTConverter(BaseConverter):
 
                 # Set \an8 tag if position is below 25
                 # (value taken from SubtitleEdit)
-                if position and position < 25:
+                if position is not None and position < 25:
                     line = '{\\an8}' + line
                     position = None
 
