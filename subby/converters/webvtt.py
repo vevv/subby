@@ -31,7 +31,7 @@ class WebVTTConverter(BaseConverter):
 
         for line in stream:
             # As our stream is bytes we have to deal with line breaks here
-            line = line.decode('utf-8').replace('\r\n', '\n').strip()
+            line = line.decode('utf-8').replace('\r\n', '\n').replace('\r', '\n').strip()
 
             # Skip processing any unnecessary lines
             if any(line.startswith(word) for word in SKIP_WORDS):
