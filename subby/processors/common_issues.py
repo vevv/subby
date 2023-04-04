@@ -160,6 +160,7 @@ class CommonIssuesFixer(BaseProcessor):
             if splits == 1:
                 line = re.sub(r'^(<i>|\{\\an8\})?-\s*', r'\1', line.strip())
             # Remove linebreaks inside lines
+            line = re.sub(r'\r\n{1,}', r'\r\n', line).strip()
             line = re.sub(r'\n{1,}', r'\n', line).strip()
 
             return line

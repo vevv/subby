@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import re
 
 from subby import regex as Regex
@@ -17,7 +18,7 @@ class SDHStripper(BaseProcessor):
         ]
 
     def process(self, srt):
-        stripped = list(srt)
+        stripped = [copy.deepcopy(line) for line in srt]
         stripped = self._clean_full_line_descriptions(stripped)
         stripped = self._clean_new_line_descriptions(stripped)
         stripped = self._clean_inline_descriptions(stripped)
