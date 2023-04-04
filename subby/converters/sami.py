@@ -3,6 +3,7 @@ from html.parser import HTMLParser
 import pysrt
 
 from subby.converters.base import BaseConverter
+from subby.subripfile import SubRipFile
 from subby.utils import timestamp_from_ms
 
 
@@ -20,7 +21,7 @@ class _SAMIConverter(HTMLParser):
         self.lines = []
         self.tags = []
 
-        self.srt = pysrt.SubRipFile([])
+        self.srt = SubRipFile([])
         self.line_list = []
 
         self.feed(self._correct_tags(subtitle))

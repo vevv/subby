@@ -8,6 +8,7 @@ import pysrt
 import tinycss
 
 from subby.converters.base import BaseConverter
+from subby.subripfile import SubRipFile
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
 STYLE_TAG = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)<\/c>$')
@@ -18,7 +19,7 @@ class WebVTTConverter(BaseConverter):
     """WebVTT subtitle converter"""
 
     def parse(self, stream):
-        srt = pysrt.SubRipFile()
+        srt = SubRipFile()
         looking_for_text = False
         looking_for_style = False
         text = []

@@ -7,6 +7,7 @@ from pymp4.util import BoxUtil
 from subby.converters.base import BaseConverter
 from subby.converters.smpte import SMPTEConverter
 from subby.converters.webvtt import WebVTTConverter
+from subby.subripfile import SubRipFile
 from subby.utils import timestamp_from_ms
 
 
@@ -14,7 +15,7 @@ class ISMTConverter(BaseConverter):
     """ISMT (DFXP in MP4) subtitle converter"""
 
     def parse(self, stream):
-        srt = pysrt.SubRipFile([])
+        srt = SubRipFile([])
         for box in MP4.parse(stream.read()):
             if box.type == b'mdat':
                 srt.extend(SMPTEConverter().from_bytes(box.data))

@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import re
 
-import pysrt
-
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
+from subby.subripfile import SubRipFile
 
 
 class SDHStripper(BaseProcessor):
@@ -26,8 +25,9 @@ class SDHStripper(BaseProcessor):
         stripped = self._strip_notes(stripped)
         stripped = self._run_extra_regexes(stripped)
 
-        stripped = pysrt.SubRipFile([line for line in stripped if line.text])
+        stripped = SubRipFile([line for line in stripped if line.text])
         stripped.clean_indexes()
+
         return stripped, stripped != srt
 
     def _clean_full_line_descriptions(self, srt):

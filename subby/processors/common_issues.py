@@ -6,6 +6,7 @@ import pysrt
 
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
+from subby.subripfile import SubRipFile
 from subby.utils import ms_from_subriptime
 
 
@@ -17,7 +18,7 @@ class CommonIssuesFixer(BaseProcessor):
         corrected = self._correct_subtitles(fixed)
         return corrected, corrected != srt
 
-    def _correct_subtitles(self, srt: pysrt.SubRipFile) -> pysrt.SubRipFile:
+    def _correct_subtitles(self, srt: SubRipFile) -> SubRipFile:
         def _fix_line(line):
             # [GENERAL] - Affects other regexes
             # Remove more than one space
@@ -176,9 +177,9 @@ class CommonIssuesFixer(BaseProcessor):
 
         return self._remove_gaps(self._combine_timecodes(srt))
 
-    def _combine_timecodes(self, srt: pysrt.SubRipFile) -> pysrt.SubRipFile:
+    def _combine_timecodes(self, srt: SubRipFile) -> SubRipFile:
         """Combines lines with timecodes and same content"""
-        subs_copy = pysrt.SubRipFile([])
+        subs_copy = SubRipFile([])
         for line in srt:
             if len(subs_copy) == 0:
                 subs_copy.append(line)
@@ -199,9 +200,9 @@ class CommonIssuesFixer(BaseProcessor):
         subs_copy.clean_indexes()
         return subs_copy
 
-    def _remove_gaps(self, srt: pysrt.SubRipFile) -> pysrt.SubRipFile:
+    def _remove_gaps(self, srt: SubRipFile) -> SubRipFile:
         """Remove short gaps between lines"""
-        subs_copy = pysrt.SubRipFile([])
+        subs_copy = SubRipFile([])
         for line in srt:
             if len(subs_copy) == 0:
                 subs_copy.append(line)
@@ -218,7 +219,7 @@ class CommonIssuesFixer(BaseProcessor):
         return subs_copy
 
     @staticmethod
-    def _fix_time_codes(srt: pysrt.SubRipFile) -> pysrt.SubRipFile:
+    def _fix_time_codes(srt: SubRipFile) -> SubRipFile:
         """Fixes timecodes over 23:59, often present in live content"""
         offset = 0
         for line in srt:

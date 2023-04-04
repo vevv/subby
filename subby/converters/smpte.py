@@ -5,6 +5,7 @@ import bs4
 import pysrt
 
 from subby.converters.base import BaseConverter
+from subby.subripfile import SubRipFile
 from subby.utils import timestamp_from_ms
 
 
@@ -19,7 +20,7 @@ class SMPTEConverter(BaseConverter):
 
         # Support for multiple XML documents in a single file
         smpte_subs = [s + '</tt>' for s in data.strip().split('</tt>') if s]
-        srt = pysrt.SubRipFile([])
+        srt = SubRipFile([])
 
         for sub in smpte_subs:
             srt.extend(_SMPTEConverter(sub).srt)
@@ -31,7 +32,7 @@ class SMPTEConverter(BaseConverter):
 class _SMPTEConverter:
     def __init__(self, data):
         self.root = bs4.BeautifulSoup(html.unescape(data), 'lxml-xml')
-        self.srt = pysrt.SubRipFile([])
+        self.srt = SubRipFile([])
 
         self.tickrate = int(self.root.tt.get('ttp:tickRate', 0))
         self.italics = {}

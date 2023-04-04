@@ -4,6 +4,7 @@ from subby.converters.smpte import SMPTEConverter
 from subby.converters.webvtt import WebVTTConverter
 from subby.processors.common_issues import CommonIssuesFixer
 from subby.processors.sdh import SDHStripper
+from subby.subripfile import SubRipFile
 
 __all__ = [
     # Converters
@@ -13,4 +14,6 @@ __all__ = [
     # Processors
     'CommonIssuesFixer',
     'SDHStripper',
+    # Utility
+    'SubRipFile',
 ]
