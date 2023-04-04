@@ -1,4 +1,3 @@
-import datetime
 import html
 import re
 import unicodedata
@@ -7,6 +6,7 @@ import pysrt
 
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
+from subby.utils import ms_from_subriptime
 
 
 class CommonIssuesFixer(BaseProcessor):
@@ -174,7 +174,7 @@ class CommonIssuesFixer(BaseProcessor):
             for _ in range(2):
                 line.text = html.unescape(line.text)
 
-        return self._combine_timecodes(srt)
+        return self._remove_gaps(self._combine_timecodes(srt))
 
     def _combine_timecodes(self, srt: pysrt.SubRipFile) -> pysrt.SubRipFile:
         """Combines lines with timecodes and same content"""
@@ -192,21 +192,28 @@ class CommonIssuesFixer(BaseProcessor):
                     and line.text.startswith(subs_copy[-1].text):
                 subs_copy[-1].end = line.end
                 subs_copy[-1].text = line.text
-            elif line.text == subs_copy[-1].text \
-                    and self._subtract_ts(line.start, subs_copy[-1].end) < 50:
-                subs_copy[-1].end = line.end
+            elif line.text.strip():
+                subs_copy.append(line)
+
+        subs_copy = subs_copy or srt
+        subs_copy.clean_indexes()
+        return subs_copy
+
+    def _remove_gaps(self, srt: pysrt.SubRipFile) -> pysrt.SubRipFile:
+        """Remove short gaps between lines"""
+        subs_copy = pysrt.SubRipFile([])
+        for line in srt:
+            if len(subs_copy) == 0:
+                subs_copy.append(line)
+                continue
             # Remove 2-frame or smaller gaps (2 frames/83ms@24 is Netflix standard)
             elif 0 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85:
                 line.start = subs_copy[-1].end
                 subs_copy.append(line)
-            elif not line.text.strip():
-                continue
-            else:
+            elif line.text.strip():
                 subs_copy.append(line)
 
-        if not subs_copy:
-            subs_copy = srt
-
+        subs_copy = subs_copy or srt
         subs_copy.clean_indexes()
         return subs_copy
 
@@ -224,12 +231,4 @@ class CommonIssuesFixer(BaseProcessor):
     @staticmethod
     def _subtract_ts(ts1: pysrt.SubRipTime, ts2: pysrt.SubRipTime) -> int:
         """Subtracts two timestamps and returns a difference as int of miliseconds"""
-        def _timestamp_to_ms(srt_ts: pysrt.SubRipTime):
-            tts: datetime.time = srt_ts.to_time()
-            miliseconds = tts.microsecond // 1000
-            miliseconds += tts.hour * 3600000
-            miliseconds += tts.minute * 60000
-            miliseconds += tts.second * 1000
-            return miliseconds
-
-        return int(_timestamp_to_ms(ts1) - _timestamp_to_ms(ts2))
+        return ms_from_subriptime(ts1) - ms_from_subriptime(ts2)
