@@ -187,10 +187,12 @@ class CommonIssuesFixer(BaseProcessor):
                 continue
             if subs_copy[-1].duration == line.duration \
                     and subs_copy[-1].start == line.start \
-                    and subs_copy[-1].end == line.end \
-                    and subs_copy[-1].text != line.text:
-                subs_copy[-1].text += '\n' + line.text
-            elif subs_copy[-1].end == line.start \
+                    and subs_copy[-1].end == line.end:
+                if subs_copy[-1].text != line.text:
+                    subs_copy[-1].text += '\n' + line.text
+            # Merge lines with less than 2 frames of gap and same text
+            # to avoid duplicating lines as we remove gaps later
+            elif 0 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85 \
                     and line.text.startswith(subs_copy[-1].text):
                 subs_copy[-1].end = line.end
                 subs_copy[-1].text = line.text
