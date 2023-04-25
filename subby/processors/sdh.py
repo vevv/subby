@@ -53,8 +53,8 @@ class SDHStripper(BaseProcessor):
     def _clean_inline_descriptions(self, srt):
         """Removes inline"""
         for line in srt:
-            for regex in (Regex.FRONT_DESCRIPTION_BRACKET, Regex.FRONT_DESCRIPTION_PARENTHESES):
-                line.text = re.sub(regex, r'\1', line.text, flags=re.M)
+            line.text = re.sub(Regex.FRONT_DESCRIPTION_BRACKET, r'\8', line.text, flags=re.M)
+            line.text = re.sub(Regex.FRONT_DESCRIPTION_PARENTHESES, r'\1', line.text, flags=re.M)
             for regex in (
                 Regex.END_DESCRIPTION_BRACKET,
                 Regex.END_DESCRIPTION_PARENTHESES,
