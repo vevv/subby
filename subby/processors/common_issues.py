@@ -166,15 +166,23 @@ class CommonIssuesFixer(BaseProcessor):
             return line
 
         for line in srt:
-            line.text = _fix_line(line.text)
-            line.text = line.text.strip()
+            # Unescape html entities (twice, because yes, double encoding happens...)
+            for _ in range(2):
+                line.text = html.unescape(line.text)
+
+            # Run fix_line twice, as some of the fixes can introduce issues, e.g. double spaces
+            for _ in range(2):
+                line.text = _fix_line(line.text)
+                line.text = line.text.strip()
 
             # Remove remaining linebreaks
             line.text = line.text.strip('\n')
 
-            # Unescape html entities (twice, because yes, double encoding happens...)
-            for _ in range(2):
-                line.text = html.unescape(line.text)
+        # Remove italics if every line is italicized, as this is almost certainly a mistake
+        # (using slices should be more performant than regex or startswith/endswith)
+        if all(line.text[:3] == '<i>' and line.text[-4:] == '</i>' for line in srt):
+            for line in srt:
+                line.text = line.text[3:-4]
 
         return self._remove_gaps(self._combine_timecodes(srt))
 

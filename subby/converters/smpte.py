@@ -31,12 +31,14 @@ class SMPTEConverter(BaseConverter):
 # Internal converter class as we need to handle multiple subs in one stream
 class _SMPTEConverter:
     def __init__(self, data):
-        self.root = bs4.BeautifulSoup(html.unescape(data), 'lxml-xml')
+        unescaped = html.unescape(data)
+        self.root = bs4.BeautifulSoup(unescaped, 'lxml-xml')
         self.srt = SubRipFile([])
 
         self.tickrate = int(self.root.tt.get('ttp:tickRate', 0))
         self.italics = {}
         self.an8 = {}
+        self.all_span_italics = '<span tts:fontStyle="italic">' not in unescaped
 
         self._parse_styles()
         self._convert()
@@ -113,7 +115,7 @@ class _SMPTEConverter:
             return element.get('tts:fontStyle') == 'italic'
         elif element.get('style'):
             return self.italics.get(element['style'])
-        elif element.name == 'span' and not element.attrs:
+        elif element.name == 'span' and not element.attrs and self.all_span_italics:
             return not self._is_italic(element.parent)
 
         return False
