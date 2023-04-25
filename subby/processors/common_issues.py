@@ -100,6 +100,10 @@ class CommonIssuesFixer(BaseProcessor):
             line = re.sub(r'^(<[a-z]>) ', r'\1', line)
             # Fix "</tag>space<tag>"
             line = re.sub(r'(?:</[a-z]>)(\s*)(?:<[a-z]>)', r'\1', line, flags=re.M)
+            # Remove empty tags
+            line = re.sub(r'<[a-z]>\s*</[a-z]>', r'', line)
+            # Move "{\an8}" to the rest of the text if it's on a new line
+            line = re.sub(r'({\\an8\})\n', r'\1', line)
 
             # [REFORMATTING]
             #

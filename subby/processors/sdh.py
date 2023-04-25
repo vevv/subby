@@ -46,8 +46,14 @@ class SDHStripper(BaseProcessor):
     def _clean_new_line_descriptions(self, srt):
         """Removes line descriptions taking up an entire line break"""
         for line in srt:
+            position = re.match(Regex.POSITION_TAGS, line.text.strip())
             for regex in (Regex.NEW_LINE_DESCRIPTION_BRACKET, Regex.NEW_LINE_DESCRIPTION_PARENTHESES):
                 line.text = re.sub(regex, r'', line.text, flags=re.M).strip()
+
+            # Restore position, if it has been removed with the description
+            if position and position[0] not in line.text:
+                line.text = position[0] + line.text
+
             yield line
 
     def _clean_inline_descriptions(self, srt):
