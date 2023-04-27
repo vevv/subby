@@ -11,11 +11,15 @@ from subby import __version__, WVTTConverter, ISMTConverter, SAMIConverter, SMPT
 
 
 @click.group()
-@click.option("-v", "--version", is_flag=True, default=False, help="Print version information.")
 @click.option("-d", "--debug", is_flag=True, default=False, help="Enable DEBUG level logs.")
-def main(version: bool, debug: bool) -> None:
+def main(debug: bool) -> None:
     """Subby—Advanced Subtitle Converter and Processor."""
     logging.basicConfig(level=logging.DEBUG if debug else logging.INFO)
+
+
+@main.command()
+def version():
+    """Print version information."""
     log = logging.getLogger(__name__)
 
     copyright_years = 2023
@@ -23,10 +27,8 @@ def main(version: bool, debug: bool) -> None:
     if copyright_years != current_year:
         copyright_years = f"{copyright_years}-{current_year}"
 
-    if version:
-        log.info("Subby version %s Copyright (c) %s vevv", __version__, copyright_years)
-        log.info("https://github.com/vevv/subby")
-        return
+    log.info("Subby version %s Copyright (c) %s vevv", __version__, copyright_years)
+    log.info("https://github.com/vevv/subby")
 
 
 @main.command()
