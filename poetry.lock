@@ -2,14 +2,14 @@
 
 [[package]]
 name = "beautifulsoup4"
-version = "4.11.2"
+version = "4.12.2"
 description = "Screen-scraping library"
 category = "main"
 optional = false
 python-versions = ">=3.6.0"
 files = [
-    {file = "beautifulsoup4-4.11.2-py3-none-any.whl", hash = "sha256:0e79446b10b3ecb499c1556f7e228a53e64a2bfcebd455f370d8927cb5b59e39"},
-    {file = "beautifulsoup4-4.11.2.tar.gz", hash = "sha256:bc4bdda6717de5a2987436fb8d72f45dc90dd856bdfd512a1314ce90349a0106"},
+    {file = "beautifulsoup4-4.12.2-py3-none-any.whl", hash = "sha256:bd2520ca0d9d7d12694a53d44ac482d181b4ec1888909b035a3dbf40d0f57d4a"},
+    {file = "beautifulsoup4-4.12.2.tar.gz", hash = "sha256:492bbc69dca35d12daac71c4db1bfff0c876c00ef4a2ffacce226d4638eb72da"},
 ]
 
 [package.dependencies]
@@ -71,22 +71,18 @@ files = [
 
 [[package]]
 name = "pymp4"
-version = "1.5.0"
-description = "A Python parser for MP4 boxes"
+version = "1.4.0"
+description = "Python parser for MP4 boxes"
 category = "main"
 optional = false
-python-versions = "*"
-files = []
-develop = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "pymp4-1.4.0-py3-none-any.whl", hash = "sha256:3401666c1e2a97ac94dffb18c5a5dcbd46d0a436da5272d378a6f9f6506dd12d"},
+    {file = "pymp4-1.4.0.tar.gz", hash = "sha256:bc9e77732a8a143d34c38aa862a54180716246938e4bf3e07585d19252b77bb5"},
+]
 
 [package.dependencies]
 construct = "2.8.8"
-
-[package.source]
-type = "git"
-url = "https://github.com/truedread/pymp4"
-reference = "HEAD"
-resolved_reference = "e5a40516b533340c9515a2730b1d557329deb0ac"
 
 [[package]]
 name = "pysrt"
@@ -104,14 +100,14 @@ chardet = "*"
 
 [[package]]
 name = "soupsieve"
-version = "2.4"
+version = "2.4.1"
 description = "A modern CSS selector implementation for Beautiful Soup."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "soupsieve-2.4-py3-none-any.whl", hash = "sha256:49e5368c2cda80ee7e84da9dbe3e110b70a4575f196efb74e51b94549d921955"},
-    {file = "soupsieve-2.4.tar.gz", hash = "sha256:e28dba9ca6c7c00173e34e4ba57448f0688bb681b7c5e8bf4971daafc093d69a"},
+    {file = "soupsieve-2.4.1-py3-none-any.whl", hash = "sha256:1c1bfee6819544a3447586c889157365a27e10d88cde3ad3da0cf0ddf646feb8"},
+    {file = "soupsieve-2.4.1.tar.gz", hash = "sha256:89d12b2d5dfcd2c9e8c22326da9d9aa9cb3dfab0a83a024f05704076ee8d35ea"},
 ]
 
 [[package]]
@@ -131,4 +127,4 @@ test = ["pytest-cov", "pytest-flake8", "pytest-isort", "pytest-runner"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "d3566b9eff4e17dd5cae137b6aaab80d4864aa06f6fcd202d4564dfd8ad02927"
+content-hash = "2da4cdb2db2a9671773e7d752c7c209586988219963033b90ebafff76e663e10"
