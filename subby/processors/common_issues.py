@@ -137,6 +137,8 @@ class CommonIssuesFixer(BaseProcessor):
             line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[a-zA-Z0-9\[\(\.♪])", r'\1- ', line, flags=re.M)
             # Remove unnecessary space before "--"
             line = re.sub(r'\s*--(\s*)', r'--\1', line, flags=re.M)
+            # Remove unnecessary space before ? or !
+            line = re.sub(r'\s*([?!])(\s*)', r'\1\2', line, flags=re.M)
             # Move notes inside tags (</i> ♪ -> </i>)
             line = re.sub(r'(</[a-z]>)(\s*♪{1,})$', r'\2\1', line, flags=re.M)
             # Remove trailing spaces
