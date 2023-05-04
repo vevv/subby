@@ -17,7 +17,23 @@ cd subby
 pip install .
 ```
 
-# Usage
+# Command line usage
+```
+Usage: subby [OPTIONS] COMMAND [ARGS]...
+
+  Subby—Advanced Subtitle Converter and Processor.
+
+Options:
+  -d, --debug  Enable DEBUG level logs.
+  --help       Show this message and exit.
+
+Commands:
+  convert  Convert a Subtitle to SubRip (SRT).
+  process  SubRip (SRT) post-processing.
+  version  Print version information.```
+
+
+# Library usage
 ## Converter
 ```py
 from subby import WebVTTConverter
