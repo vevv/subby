@@ -30,7 +30,8 @@ Options:
 Commands:
   convert  Convert a Subtitle to SubRip (SRT).
   process  SubRip (SRT) post-processing.
-  version  Print version information.```
+  version  Print version information.
+```
 
 
 # Library usage
