@@ -6,8 +6,9 @@ from pathlib import Path
 
 import click
 
-from subby import __version__, WVTTConverter, ISMTConverter, SAMIConverter, SMPTEConverter, WebVTTConverter, \
-    CommonIssuesFixer, SDHStripper
+from subby import (CommonIssuesFixer, ISMTConverter, SAMIConverter,
+                   SDHStripper, SMPTEConverter, WebVTTConverter, WVTTConverter,
+                   __version__)
 
 
 @click.group()
