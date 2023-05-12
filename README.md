@@ -106,3 +106,8 @@ if status is True:
     stripped.save(file_stripped)
     # saved to file_stripped.srt
 ```
+
+## Contributors
+
+<a href="https://github.com/vevv"><img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/68520787?v=4&h=25&w=25&fit=cover&mask=circle&maxage=7d" alt=""/></a>
+<a href="https://github.com/rlaphoenix"><img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/17136956?v=4&h=25&w=25&fit=cover&mask=circle&maxage=7d" alt=""/></a>
