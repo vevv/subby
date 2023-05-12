@@ -18,7 +18,7 @@ class SDHStripper(BaseProcessor):
         ]
 
     def process(self, srt):
-        stripped = [copy.deepcopy(line) for line in srt]
+        stripped = [line for line in copy.deepcopy(srt)]
         stripped = self._clean_full_line_descriptions(stripped)
         stripped = self._clean_new_line_descriptions(stripped)
         stripped = self._clean_inline_descriptions(stripped)

@@ -1,3 +1,4 @@
+import copy
 import html
 import re
 import unicodedata
@@ -14,7 +15,7 @@ class CommonIssuesFixer(BaseProcessor):
     """Processor fixing common issues found in subtitles"""
 
     def process(self, srt):
-        fixed = self._fix_time_codes(srt)
+        fixed = self._fix_time_codes(copy.deepcopy(srt))
         corrected = self._correct_subtitles(fixed)
         return corrected, corrected != srt
 

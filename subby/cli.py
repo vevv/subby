@@ -36,7 +36,14 @@ def version():
 @click.argument("file", type=Path)
 @click.option("-o", "--out", type=Path, default=None)
 @click.option("-e", "--encoding", type=str, default="utf8")
-def convert(file: Path, out: Path | None, encoding: str):
+@click.option(
+    "-n",
+    "--no-post-processing",
+    is_flag=True,
+    default=False,
+    help="Disable post-processing after conversion."
+)
+def convert(file: Path, out: Path | None, encoding: str, no_post_processing: bool):
     """Convert a Subtitle to SubRip (SRT)."""
     if not isinstance(file, Path):
         raise click.ClickException(f"Expected file to be a {Path} not {file!r}")
@@ -74,6 +81,11 @@ def convert(file: Path, out: Path | None, encoding: str):
 
     srt = converter.from_file(file)
     log.info(f"Converted Subtitle to SubRip (SRT)")
+
+    if not no_post_processing:
+        processor = CommonIssuesFixer()
+        srt, status = processor.from_srt(srt)
+        log.info(f"Processed Subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
 
     srt.save(out, encoding=encoding)
     log.info(f"Saved to: {out}")

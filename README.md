@@ -17,6 +17,10 @@ cd subby
 pip install .
 ```
 
+# Usage notes
+`CommonIssuesFixer` should be ran after conversion and SDH stripping
+as it's designed to fix source issues, including ones which can cause playback problems.
+
 # Command line usage
 ```
 Usage: subby [OPTIONS] COMMAND [ARGS]...
