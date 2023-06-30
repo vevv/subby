@@ -2,7 +2,8 @@ import pysrt
 
 from subby import CommonIssuesFixer
 
-srt, _ = CommonIssuesFixer().from_string('''1
+fixer = CommonIssuesFixer()
+srt, _ = fixer.from_string('''1
 00:01:00,000 --> 00:01:01,000
 #BlackLivesMatter
 
@@ -99,6 +100,15 @@ Synthetic test.</i> <i>
 Definitely not real.</i>
 ''')
 
+fixer.remove_gaps = False
+srt2, _ = fixer.from_string('''1
+00:19:00,000 --> 00:19:00,100
+do not remove 2 frame gap between this
+
+2
+00:19:00,183 --> 00:19:01,000
+and that line''')
+
 # Test correct musical note conversion
 assert srt[0].text == '#BlackLivesMatter'
 assert srt[1].text == '♪ BlackLivesMatter ♪'
@@ -128,6 +138,8 @@ assert srt[17].text == "<i>test</i>"
 
 # Test 83 ms gap removal
 assert srt[18].end == srt[19].start == pysrt.SubRipTime(minutes=19, milliseconds=100)
+assert srt2[0].end == pysrt.SubRipTime(minutes=19, milliseconds=100)
+assert srt2[1].start == pysrt.SubRipTime(minutes=19, milliseconds=183)
 
 # Test redundant space removal
 assert srt[21].text == "<i>SOMETHING:\nSynthetic test.\nDefinitely not real.</i>"
