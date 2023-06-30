@@ -209,6 +209,10 @@ class CommonIssuesFixer(BaseProcessor):
                     and subs_copy[-1].end == line.end:
                 if subs_copy[-1].text != line.text:
                     subs_copy[-1].text += '\n' + line.text
+            # Merge lines with the same text within 10 ms
+            elif self._subtract_ts(line.start, subs_copy[-1].end) < 10 \
+                    and line.text == subs_copy[-1].text:
+                subs_copy[-1].end = line.end
             # Merge lines with less than 2 frames of gap and same text
             # to avoid duplicating lines as we remove gaps later
             elif 0 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85 \
