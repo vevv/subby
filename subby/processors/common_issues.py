@@ -14,6 +14,8 @@ from subby.utils import ms_from_subriptime
 class CommonIssuesFixer(BaseProcessor):
     """Processor fixing common issues found in subtitles"""
 
+    remove_gaps = True
+
     def process(self, srt):
         fixed = self._fix_time_codes(copy.deepcopy(srt))
         corrected = self._correct_subtitles(fixed)
@@ -189,7 +191,11 @@ class CommonIssuesFixer(BaseProcessor):
             for line in srt:
                 line.text = line.text[3:-4]
 
-        return self._remove_gaps(self._combine_timecodes(srt))
+        combined = self._combine_timecodes(srt)
+        if self.remove_gaps:
+            return self._remove_gaps(combined)
+
+        return combined
 
     def _combine_timecodes(self, srt: SubRipFile) -> SubRipFile:
         """Combines lines with timecodes and same content"""
@@ -206,7 +212,8 @@ class CommonIssuesFixer(BaseProcessor):
             # Merge lines with less than 2 frames of gap and same text
             # to avoid duplicating lines as we remove gaps later
             elif 0 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85 \
-                    and line.text.startswith(subs_copy[-1].text):
+                    and line.text.startswith(subs_copy[-1].text) \
+                    and self.remove_gaps:
                 subs_copy[-1].end = line.end
                 subs_copy[-1].text = line.text
             elif line.text.strip():

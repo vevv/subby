@@ -96,6 +96,7 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
 @click.argument("file", type=Path)
 @click.option("-o", "--out", type=Path, default=None)
 @click.option("-e", "--encoding", type=str, default="utf8")
+@click.option("-g", "--keep-short-gaps", is_flag=True)
 def process(file: Path, out: Path | None, **__):
     """SubRip (SRT) post-processing."""
     if not isinstance(file, Path):
@@ -116,6 +117,7 @@ def mend(ctx: click.Context):
     log = logging.getLogger("process.mend")
 
     processor = CommonIssuesFixer()
+    processor.remove_gaps = not ctx.parent.params["keep_short_gaps"]
     processed_srt, status = processor.from_file(file)
     log.info(f"Processed Subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
 
