@@ -36,7 +36,7 @@ class SDHStripper(BaseProcessor):
         for line in srt:
             text = self._strip_tags(line.text)
             for regex in (Regex.FULL_LINE_DESCIRPTION_BRACKET, Regex.FULL_LINE_DESCIRPTION_PARENTHESES):
-                text = re.sub(regex, r'', text, flags=re.M).strip()
+                text = re.sub(regex, r'', text, flags=re.S).strip()
 
             if not text:
                 continue
