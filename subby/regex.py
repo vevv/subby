@@ -3,8 +3,8 @@ POSITION_TAGS = r'^{\\an[0-9]}'
 FRONT_OPTIONAL_TAGS_WITH_HYPHEN = rf'^\s*({TAGS})?\s*-?\s*({TAGS})?'
 TIME_LOOKAHEAD = r'(?![0-9]{2})'
 
-SPEAKER = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(Mc[A-Z][a-zA-Z]+|[A-Z0-9\&\[\]\.# ]+\s*|[A-Z][a-z]+):{TIME_LOOKAHEAD} ?'
-SPEAKER_PARENTHESES = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(?:[A-Z0-9\.# ]+\s*|[A-Z][a-z]+)(?: \([a-zA-Z ]+\)): ?'
+SPEAKER = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(Mc[A-Z][a-zA-Z]+|[A-Z0-9\&\[\]\.#\' ]+\s*|[A-Z][a-z]+):{TIME_LOOKAHEAD} ?'
+SPEAKER_PARENTHESES = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(?:[A-Z0-9\&\[\]\.#\' ]+\s*|[A-Z][a-z]+)(?: \([a-zA-Z ]+\)): ?'
 
 DESCRIPTION_BRACKET = r'\[(?:[^\]]|\s)*\]'
 DESCRIPTION_PARENTHESES = r'\((?:[^\)]|\s)*\)'
