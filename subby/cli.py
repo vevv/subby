@@ -12,7 +12,7 @@ from subby import (CommonIssuesFixer, ISMTConverter, SAMIConverter,
 
 
 @click.group()
-@click.option("-d", "--debug", is_flag=True, default=False, help="Enable DEBUG level logs.")
+@click.option("-d", "--debug", is_flag=True, default=False, help="Enable debug level logs.")
 def main(debug: bool) -> None:
     """Subby—Advanced Subtitle Converter and Processor."""
     logging.basicConfig(level=logging.DEBUG if debug else logging.INFO)
@@ -34,8 +34,14 @@ def version():
 
 @main.command()
 @click.argument("file", type=Path)
-@click.option("-o", "--out", type=Path, default=None)
-@click.option("-e", "--encoding", type=str, default="utf8")
+@click.option("-o", "--out", type=Path, default=None, help="Output path.")
+@click.option(
+    "-e",
+    "--encoding",
+    type=str,
+    default="utf-8",
+    help="Character encoding (default: utf-8)."
+)
 @click.option(
     "-n",
     "--no-post-processing",
@@ -43,7 +49,13 @@ def version():
     default=False,
     help="Disable post-processing after conversion."
 )
-def convert(file: Path, out: Path | None, encoding: str, no_post_processing: bool):
+@click.option(
+    "-g",
+    "--keep-short-gaps",
+    is_flag=True,
+    help="Keep short gaps between lines (< 85 ms; only with post-processing enabled)"
+)
+def convert(file: Path, out: Path | None, encoding: str, no_post_processing: bool, keep_short_gaps: bool):
     """Convert a Subtitle to SubRip (SRT)."""
     if not isinstance(file, Path):
         raise click.ClickException(f"Expected file to be a {Path} not {file!r}")
@@ -80,23 +92,35 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
         return
 
     srt = converter.from_file(file)
-    log.info(f"Converted Subtitle to SubRip (SRT)")
+    log.info(f"Converted subtitle to SubRip (SRT)")
 
     if not no_post_processing:
         processor = CommonIssuesFixer()
+        processor.remove_gaps = not keep_short_gaps
         srt, status = processor.from_srt(srt)
-        log.info(f"Processed Subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
+        log.info(f"Processed subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
 
     srt.save(out, encoding=encoding)
     log.info(f"Saved to: {out}")
-    log.debug(f"Used text encoding {encoding}")
+    log.debug(f"Used character encoding {encoding}")
 
 
 @main.group()
 @click.argument("file", type=Path)
-@click.option("-o", "--out", type=Path, default=None)
-@click.option("-e", "--encoding", type=str, default="utf8")
-@click.option("-g", "--keep-short-gaps", is_flag=True)
+@click.option("-o", "--out", type=Path, default=None, help="Output path.")
+@click.option(
+    "-e",
+    "--encoding",
+    type=str,
+    default="utf-8",
+    help="Character encoding (default: utf-8)."
+)
+@click.option(
+    "-g",
+    "--keep-short-gaps",
+    is_flag=True,
+    help="Keep short gaps between lines (< 85 ms)"
+)
 def process(file: Path, out: Path | None, **__):
     """SubRip (SRT) post-processing."""
     if not isinstance(file, Path):
@@ -119,7 +143,7 @@ def mend(ctx: click.Context):
     processor = CommonIssuesFixer()
     processor.remove_gaps = not ctx.parent.params["keep_short_gaps"]
     processed_srt, status = processor.from_file(file)
-    log.info(f"Processed Subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
+    log.info(f"Processed subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
 
     return processed_srt, status
 
@@ -137,7 +161,7 @@ def strip_sdh(ctx: click.Context):
 
     processor = SDHStripper()
     processed_srt, status = processor.from_file(file)
-    log.info(f"Processed Subtitle {['but no SDH descriptions were found...', 'and removed SDH!'][status]}")
+    log.info(f"Processed subtitle {['but no SDH descriptions were found...', 'and removed SDH!'][status]}")
 
     return processed_srt, status
 
@@ -149,4 +173,4 @@ def process_result(result, out, encoding, *_, **__):
     if status:
         processed_srt.save(out, encoding=encoding)
         log.info(f"Saved to: {out}")
-        log.debug(f"Used text encoding {encoding}")
+        log.debug(f"Used character encoding {encoding}")
