@@ -36,6 +36,12 @@ class _SMPTEConverter:
         self.srt = SubRipFile([])
 
         self.tickrate = int(self.root.tt.get('ttp:tickRate', 0))
+        self.frame_duration = 1
+        if (rate := self.root.tt.get('ttp:frameRate')) is not None:
+            num, denom = map(int, self.root.tt.get('ttp:frameRateMultiplier', '1 1').split())
+            framerate = (int(rate) * num) / denom
+            self.frame_duration = (1 / framerate) * 1000  # ms
+
         self.italics = {}
         self.an8 = {}
         self.all_span_italics = '<span tts:fontStyle="italic">' not in unescaped
@@ -49,7 +55,7 @@ class _SMPTEConverter:
         except AttributeError:
             return
 
-        for num, line in enumerate(self.root.tt.body.div.find_all('p')):
+        for num, line in enumerate(self.root.tt.body.div.find_all('p'), 1):
             line_text = ''
 
             for time in ('begin', 'end'):
@@ -57,7 +63,7 @@ class _SMPTEConverter:
                     line[time] = self._convert_ticks(line[time])
                 if line[time].endswith('ms'):
                     line[time] = timestamp_from_ms(line[time][:-2])
-                line[time] = self._correct_timestamp(line[time])
+                line[time] = self._parse_timestamp(line[time])
 
             srt_line = pysrt.SubRipItem(
                 index=num,
@@ -135,15 +141,14 @@ class _SMPTEConverter:
 
         return timestamp_from_ms(seconds)
 
-    @staticmethod
-    def _correct_timestamp(timestamp):
+    def _parse_timestamp(self, timestamp):
         regex = r'([0-9]{2}):([0-9]{2}):([0-9]{2})[:\.,]?([0-9]{0,3})?'
         parsed = re.search(regex, timestamp)
         hours = int(parsed.group(1))
         minutes = int(parsed.group(2))
         seconds = int(parsed.group(3))
         miliseconds = 0
-        if parsed.group(4):
-            miliseconds = int(parsed.group(4))
+        if frames := parsed.group(4):
+            miliseconds = self.frame_duration * int(frames)
 
         return "%02d:%02d:%02d.%03d" % (hours, minutes, seconds, miliseconds)
