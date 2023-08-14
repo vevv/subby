@@ -1,4 +1,5 @@
 import html
+import logging
 import re
 
 import bs4
@@ -31,6 +32,7 @@ class SMPTEConverter(BaseConverter):
 # Internal converter class as we need to handle multiple subs in one stream
 class _SMPTEConverter:
     def __init__(self, data):
+        self.logger = logging.getLogger(__name__)
         unescaped = html.unescape(data)
         self.root = bs4.BeautifulSoup(unescaped, 'lxml-xml')
         self.srt = SubRipFile([])
@@ -58,12 +60,20 @@ class _SMPTEConverter:
         for num, line in enumerate(self.root.tt.body.div.find_all('p'), 1):
             line_text = ''
 
-            for time in ('begin', 'end'):
-                if line[time].endswith('t'):
-                    line[time] = self._convert_ticks(line[time])
-                if line[time].endswith('ms'):
-                    line[time] = timestamp_from_ms(line[time][:-2])
-                line[time] = self._parse_timestamp(line[time])
+            try:
+                for time in ('begin', 'end'):
+                    if line[time].endswith('t'):
+                        line[time] = self._convert_ticks(line[time])
+                    elif line[time].endswith('ms'):
+                        line[time] = timestamp_from_ms(line[time][:-2])
+                    else:
+                        line[time] = self._parse_timestamp(line[time])
+            except AttributeError:
+                self.logger.warning(
+                    'Could not parse %s timestamp for line %02d, skipping',
+                    time, num
+                )
+                continue
 
             srt_line = pysrt.SubRipItem(
                 index=num,
