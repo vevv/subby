@@ -70,7 +70,7 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
     data = file.read_bytes()
     converter = None
 
-    if b"mdat" in data:
+    if b"mdat" in data and b"moof" in data:
         if b"</tt>" in data:
             log.info("Subtitle format: ISMT (DFXP in MP4)")
             converter = ISMTConverter()
