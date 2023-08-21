@@ -33,8 +33,11 @@ class SMPTEConverter(BaseConverter):
 class _SMPTEConverter:
     def __init__(self, data):
         self.logger = logging.getLogger(__name__)
-        unescaped = html.unescape(data)
-        self.root = bs4.BeautifulSoup(unescaped, 'lxml-xml')
+        self.root = bs4.BeautifulSoup(data, 'lxml-xml')
+        # Unescape only if necessary (parsing fails)
+        if not self.root:
+            self.root = bs4.BeautifulSoup(html.unescape(data), 'lxml-xml')
+
         self.srt = SubRipFile([])
 
         self.tickrate = int(self.root.tt.get('ttp:tickRate', 0))
@@ -46,7 +49,7 @@ class _SMPTEConverter:
 
         self.italics = {}
         self.an8 = {}
-        self.all_span_italics = '<span tts:fontStyle="italic">' not in unescaped
+        self.all_span_italics = '<span tts:fontStyle="italic">' not in data
 
         self._parse_styles()
         self._convert()
