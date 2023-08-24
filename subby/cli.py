@@ -116,6 +116,13 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
     help="Character encoding (default: utf-8)."
 )
 @click.option(
+    "-n",
+    "--no-post-processing",
+    is_flag=True,
+    default=False,
+    help="Disable post-processing after SDH stripping."
+)
+@click.option(
     "-g",
     "--keep-short-gaps",
     is_flag=True,
@@ -162,6 +169,12 @@ def strip_sdh(ctx: click.Context):
     processor = SDHStripper()
     processed_srt, status = processor.from_file(file)
     log.info(f"Processed subtitle {['but no SDH descriptions were found...', 'and removed SDH!'][status]}")
+
+    if not ctx.parent.params["no_post_processing"]:
+        processor = CommonIssuesFixer()
+        processor.remove_gaps = not ctx.parent.params["keep_short_gaps"]
+        processed_srt, _ = processor.from_srt(processed_srt)
+        log.info(f"Processed stripped subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
 
     return processed_srt, status
 
