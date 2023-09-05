@@ -137,7 +137,7 @@ class CommonIssuesFixer(BaseProcessor):
             )
             line = re.sub(r'\.{2,}\s*$', r'...', line, flags=re.M)
             # Change "-line" to "- line"
-            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[a-zA-Z0-9\[\(\<\{\.♪])", r'\1- ', line, flags=re.M)
+            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[a-zA-Z0-9\[\(\<\{\.\$♪])", r'\1- ', line, flags=re.M)
             # Remove unnecessary space before "--"
             line = re.sub(r'\s*--(\s*)', r'--\1', line, flags=re.M)
             # Move notes inside tags (</i> ♪ -> </i>)
