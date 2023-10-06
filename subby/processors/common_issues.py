@@ -131,13 +131,13 @@ class CommonIssuesFixer(BaseProcessor):
             line = re.sub(r',\n([a-z]+[\.\?])\s*$', r', \1', line)
             # Correct front and end elypses
             line = re.sub(
-                rf'({Regex.FRONT_OPTIONAL_TAGS_WITH_HYPHEN})' r'\.{1,}',
+                rf'({Regex.FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\.{1,}',
                 r'\1...',
                 line, flags=re.M
             )
             line = re.sub(r'\.{2,}\s*$', r'...', line, flags=re.M)
             # Change "-line" to "- line"
-            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[a-zA-Z0-9\[\(\<\{\.\$♪])", r'\1- ', line, flags=re.M)
+            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[\w\[\(\<\{\.\$♪])", r'\1- ', line, flags=re.M)
             # Remove unnecessary space before "--"
             line = re.sub(r'\s*--(\s*)', r'--\1', line, flags=re.M)
             # Move notes inside tags (</i> ♪ -> </i>)
