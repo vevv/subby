@@ -16,6 +16,7 @@ from subby import (CommonIssuesFixer, ISMTConverter, SAMIConverter,
 def main(debug: bool) -> None:
     """Subby—Advanced Subtitle Converter and Processor."""
     logging.basicConfig(level=logging.DEBUG if debug else logging.INFO)
+    logging.getLogger('srt').setLevel(logging.DEBUG if debug else logging.CRITICAL)
 
 
 @main.command()
@@ -92,7 +93,7 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
         return
 
     srt = converter.from_file(file)
-    log.info(f"Converted subtitle to SubRip (SRT)")
+    log.info("Converted subtitle to SubRip (SRT)")
 
     if not no_post_processing:
         processor = CommonIssuesFixer()
@@ -174,7 +175,10 @@ def strip_sdh(ctx: click.Context):
         processor = CommonIssuesFixer()
         processor.remove_gaps = not ctx.parent.params["keep_short_gaps"]
         processed_srt, _ = processor.from_srt(processed_srt)
-        log.info(f"Processed stripped subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
+        log.info(
+            "Processed stripped subtitle "
+            + ['but no issues were found...', 'and repaired some issues!'][status]
+        )
 
     return processed_srt, status
 

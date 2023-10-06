@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import re
 
-import pysrt
+from srt import Subtitle
 
 
 def timestamp_from_ms(duration: float | int) -> str:
@@ -29,15 +29,16 @@ def ms_from_timestamp(timestamp: str) -> int:
     return miliseconds
 
 
-def ms_from_datetime(timestamp: datetime.time) -> int:
-    """Returns miliseconds from datetime.time"""
-    miliseconds = timestamp.microsecond // 1000
-    miliseconds += timestamp.hour * 3600000
-    miliseconds += timestamp.minute * 60000
-    miliseconds += timestamp.second * 1000
-    return miliseconds
+def timedelta_from_timestamp(timestamp: str) -> datetime.timedelta:
+    """Returns timedelta from a timestamp"""
+    return datetime.timedelta(seconds=ms_from_timestamp(timestamp) / 1000)
 
 
-def ms_from_subriptime(timestamp: pysrt.SubRipTime) -> int:
-    """Returns miliseconds from pysrt.SubRipTime"""
-    return ms_from_datetime(timestamp.to_time())
+def timedelta_from_ms(duration: float | int) -> datetime.timedelta:
+    """Returns timedelta from miliseconds"""
+    return datetime.timedelta(seconds=duration / 1000)
+
+
+def line_duration(line: Subtitle):
+    """Returns duration of a srt.Subtitle line"""
+    return abs(line.end - line.start)

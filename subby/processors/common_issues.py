@@ -1,14 +1,13 @@
 import copy
+import datetime
 import html
 import re
 import unicodedata
 
-import pysrt
-
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
 from subby.subripfile import SubRipFile
-from subby.utils import ms_from_subriptime
+from subby.utils import line_duration
 
 
 class CommonIssuesFixer(BaseProcessor):
@@ -131,7 +130,7 @@ class CommonIssuesFixer(BaseProcessor):
             line = re.sub(r',\n([a-z]+[\.\?])\s*$', r', \1', line)
             # Correct front and end elypses
             line = re.sub(
-                rf'({Regex.FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\.{1,}',
+                rf'({Regex.FRONT_OPTIONAL_TAGS_WITH_HYPHEN})' r'\.{1,}',
                 r'\1...',
                 line, flags=re.M
             )
@@ -175,21 +174,21 @@ class CommonIssuesFixer(BaseProcessor):
         for line in srt:
             # Unescape html entities (twice, because yes, double encoding happens...)
             for _ in range(2):
-                line.text = html.unescape(line.text)
+                line.content = html.unescape(line.content)
 
             # Run fix_line twice, as some of the fixes can introduce issues, e.g. double spaces
             for _ in range(2):
-                line.text = _fix_line(line.text)
-                line.text = line.text.strip()
+                line.content = _fix_line(line.content)
+                line.content = line.content.strip()
 
             # Remove remaining linebreaks
-            line.text = line.text.strip('\n')
+            line.content = line.content.strip('\n')
 
         # Remove italics if every line is italicized, as this is almost certainly a mistake
         # (using slices should be more performant than regex or startswith/endswith)
-        if all(line.text[:3] == '<i>' and line.text[-4:] == '</i>' for line in srt):
+        if all(line.content[:3] == '<i>' and line.content[-4:] == '</i>' for line in srt):
             for line in srt:
-                line.text = line.text[3:-4]
+                line.content = line.content[3:-4]
 
         combined = self._combine_timecodes(srt)
         if self.remove_gaps:
@@ -204,23 +203,23 @@ class CommonIssuesFixer(BaseProcessor):
             if len(subs_copy) == 0:
                 subs_copy.append(line)
                 continue
-            if subs_copy[-1].duration == line.duration \
+            if line_duration(subs_copy[-1]) == line_duration(line) \
                     and subs_copy[-1].start == line.start \
                     and subs_copy[-1].end == line.end:
-                if subs_copy[-1].text != line.text:
-                    subs_copy[-1].text += '\n' + line.text
+                if subs_copy[-1].content != line.content:
+                    subs_copy[-1].content += '\n' + line.content
             # Merge lines with the same text within 10 ms
             elif self._subtract_ts(line.start, subs_copy[-1].end) < 10 \
-                    and line.text == subs_copy[-1].text:
+                    and line.content == subs_copy[-1].content:
                 subs_copy[-1].end = line.end
             # Merge lines with less than 2 frames of gap and same text
             # to avoid duplicating lines as we remove gaps later
             elif 0 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85 \
-                    and line.text.startswith(subs_copy[-1].text) \
+                    and line.content.startswith(subs_copy[-1].content) \
                     and self.remove_gaps:
                 subs_copy[-1].end = line.end
-                subs_copy[-1].text = line.text
-            elif line.text.strip():
+                subs_copy[-1].content = line.content
+            elif line.content.strip():
                 subs_copy.append(line)
 
         subs_copy = subs_copy or srt
@@ -238,7 +237,7 @@ class CommonIssuesFixer(BaseProcessor):
             elif 0 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85:
                 line.start = subs_copy[-1].end
                 subs_copy.append(line)
-            elif line.text.strip():
+            elif line.content.strip():
                 subs_copy.append(line)
 
         subs_copy = subs_copy or srt
@@ -248,6 +247,7 @@ class CommonIssuesFixer(BaseProcessor):
     @staticmethod
     def _fix_time_codes(srt: SubRipFile) -> SubRipFile:
         """Fixes timecodes over 23:59, often present in live content"""
+        return srt
         offset = 0
         for line in srt:
             if not offset and line.start.hours > 23:
@@ -257,6 +257,6 @@ class CommonIssuesFixer(BaseProcessor):
         return srt
 
     @staticmethod
-    def _subtract_ts(ts1: pysrt.SubRipTime, ts2: pysrt.SubRipTime) -> int:
+    def _subtract_ts(ts1: datetime.timedelta, ts2: datetime.timedelta) -> int:
         """Subtracts two timestamps and returns a difference as int of miliseconds"""
-        return ms_from_subriptime(ts1) - ms_from_subriptime(ts2)
+        return round((ts1 - ts2).total_seconds() * 1000)

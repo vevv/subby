@@ -24,6 +24,11 @@ as it's designed to fix source issues, including ones which can cause playback p
 `CommonIssuesFixer` removes short gaps (2 frames) by default.
 This can be disabled by setting `CommonIssuesFixer.remove_gaps` to `False` before running.
 
+`subby.SubRipFile` accepts similar methods to `pysrt.SubRipFile`, but isn't a fully compatible replacement.
+Only `from_string`, `clean_indexes`, `export`, `save` are guaranteed to work.
+
+This object is otherwise just a list storing `srt.Subtitle` elements.
+
 # Command line usage
 ```
 Usage: subby [OPTIONS] COMMAND [ARGS]...
@@ -55,7 +60,7 @@ srt = converter.from_file(file)
 srt = converter.from_string(file.read_text())
 srt = converter.from_bytes(file.read_bytes())
 
-# srt is pysrt.SubRipFile
+# srt is subby.SubRipFile
 
 output = Path('file.srt')
 srt.save(output)
@@ -77,7 +82,7 @@ srt, status = processor.from_file(file)
 srt, status = processor.from_string(file.read_text())
 srt, status = processor.from_bytes(file.read_bytes())
 
-# srt is pysrt.SubRipFile, status is bool
+# srt is subby.SubRipFile, status is bool
 
 output = Path('test_fixed.srt')
 srt.save(output)

@@ -1,6 +1,5 @@
 from collections import deque
 
-import pysrt
 from pymp4.parser import MP4
 from pymp4.util import BoxUtil
 

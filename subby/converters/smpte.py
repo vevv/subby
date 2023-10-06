@@ -3,11 +3,11 @@ import logging
 import re
 
 import bs4
-import pysrt
+from srt import Subtitle
 
 from subby.converters.base import BaseConverter
 from subby.subripfile import SubRipFile
-from subby.utils import timestamp_from_ms
+from subby.utils import timedelta_from_timestamp, timestamp_from_ms
 
 
 class SMPTEConverter(BaseConverter):
@@ -78,10 +78,11 @@ class _SMPTEConverter:
                 )
                 continue
 
-            srt_line = pysrt.SubRipItem(
+            srt_line = Subtitle(
                 index=num,
-                start=line['begin'],
-                end=line['end']
+                start=timedelta_from_timestamp(line['begin']),
+                end=timedelta_from_timestamp(line['end']),
+                content=''
             )
 
             for element in line:
@@ -95,8 +96,8 @@ class _SMPTEConverter:
             if self._is_an8(line) and line_text.strip():
                 line_text = '{\\an8}%s' % line_text.strip()
 
-            srt_line.text = line_text.strip().strip('\n')
-            if srt_line.text:
+            srt_line.content = line_text.strip().strip('\n')
+            if srt_line.content:
                 self.srt.append(srt_line)
 
     def _parse_styles(self):

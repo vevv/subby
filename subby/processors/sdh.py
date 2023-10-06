@@ -26,7 +26,7 @@ class SDHStripper(BaseProcessor):
         stripped = self._strip_notes(stripped)
         stripped = self._run_extra_regexes(stripped)
 
-        stripped = SubRipFile([line for line in stripped if line.text])
+        stripped = SubRipFile([line for line in stripped if line.content])
         stripped.clean_indexes()
 
         return stripped, stripped != srt
@@ -34,7 +34,7 @@ class SDHStripper(BaseProcessor):
     def _clean_full_line_descriptions(self, srt):
         """Removes full line descriptions"""
         for line in srt:
-            text = self._strip_tags(line.text)
+            text = self._strip_tags(line.content)
             for regex in (Regex.FULL_LINE_DESCIRPTION_BRACKET, Regex.FULL_LINE_DESCIRPTION_PARENTHESES):
                 text = re.sub(regex, r'', text, flags=re.S).strip()
 
@@ -46,28 +46,28 @@ class SDHStripper(BaseProcessor):
     def _clean_new_line_descriptions(self, srt):
         """Removes line descriptions taking up an entire line break"""
         for line in srt:
-            position = re.match(Regex.POSITION_TAGS, line.text.strip())
+            position = re.match(Regex.POSITION_TAGS, line.content.strip())
             for regex in (Regex.NEW_LINE_DESCRIPTION_BRACKET, Regex.NEW_LINE_DESCRIPTION_PARENTHESES):
-                line.text = re.sub(regex, r'', line.text, flags=re.M).strip()
+                line.content = re.sub(regex, r'', line.content, flags=re.M).strip()
 
             # Restore position, if it has been removed with the description
-            if position and position[0] not in line.text:
-                line.text = position[0] + line.text
+            if position and position[0] not in line.content:
+                line.content = position[0] + line.content
 
             yield line
 
     def _clean_inline_descriptions(self, srt):
         """Removes inline"""
         for line in srt:
-            line.text = re.sub(Regex.FRONT_DESCRIPTION_BRACKET, r'\8', line.text, flags=re.M)
-            line.text = re.sub(Regex.FRONT_DESCRIPTION_PARENTHESES, r'\1', line.text, flags=re.M)
+            line.content = re.sub(Regex.FRONT_DESCRIPTION_BRACKET, r'\8', line.content, flags=re.M)
+            line.content = re.sub(Regex.FRONT_DESCRIPTION_PARENTHESES, r'\1', line.content, flags=re.M)
             for regex in (
                 Regex.END_DESCRIPTION_BRACKET,
                 Regex.END_DESCRIPTION_PARENTHESES,
                 Regex.INLINE_DESCRIPTION
             ):
-                line.text = re.sub(regex, r'', line.text, flags=re.M)
-            line.text = line.text.strip()
+                line.content = re.sub(regex, r'', line.content, flags=re.M)
+            line.content = line.content.strip()
             yield line
 
     def _clean_speaker_names(self, srt):
@@ -75,13 +75,13 @@ class SDHStripper(BaseProcessor):
         for line in srt:
             # Retain frontal tags/hyphens
             for regex in (Regex.SPEAKER_PARENTHESES, Regex.SPEAKER):
-                line.text = re.sub(regex, r'\2', line.text, flags=re.M).strip()
+                line.content = re.sub(regex, r'\2', line.content, flags=re.M).strip()
             yield line
 
     def _strip_notes(self, srt):
         """Removes lines with just musical notes"""
         for line in srt:
-            if re.match(r'^♪+$', re.sub(r'\s*', r'', self._strip_tags(line.text).strip())):
+            if re.match(r'^♪+$', re.sub(r'\s*', r'', self._strip_tags(line.content).strip())):
                 continue
 
             yield line
@@ -90,7 +90,7 @@ class SDHStripper(BaseProcessor):
         """Runs extra regexes provided by user"""
         for line in srt:
             for regex in self.extra_regexes:
-                line.text = re.sub(regex, r'', line.text)
+                line.content = re.sub(regex, r'', line.content)
             yield line
 
     @staticmethod

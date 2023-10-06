@@ -1,4 +1,4 @@
-import pysrt
+from datetime import timedelta
 
 from subby import CommonIssuesFixer
 
@@ -90,14 +90,19 @@ remove 2 frame gap between this
 and that line
 
 21
-00:20:00,000 --> 00:20:01,000
+00:21:00,000 --> 00:21:01,000
 ♪ <i>Fire</i>♪
 
 22
-00:21:00,000 --> 00:21:01,000
+00:22:00,000 --> 00:22:01,000
 <i>SOMETHING:</i> <i>
 Synthetic test.</i> <i>
 Definitely not real.</i>
+
+23
+00:23:00,000 --> 00:23:01,000
+-Well.
+-$5000?
 ''')
 
 fixer.remove_gaps = False
@@ -110,36 +115,39 @@ do not remove 2 frame gap between this
 and that line''')
 
 # Test correct musical note conversion
-assert srt[0].text == '#BlackLivesMatter'
-assert srt[1].text == '♪ BlackLivesMatter ♪'
-assert srt[2].text == '♪ #BlackLivesMatter ♪'
-assert srt[3].text == '♪ Song Lyrics ♪'
-assert srt[4].text == 'We are #1!'
-assert srt[5].text == '<i>♪ Song Lyrics</i>'
-assert srt[6].text == '♪ Song Lyrics\nOn two separate lines ♪'
-assert srt[7].text == '#1 Radio Station'
-assert srt[8].text == 'ABCD FM\n#1 Radio Station'
-assert srt[9].text == '#One Radio Station'
-assert srt[20].text == '<i>♪ Fire ♪</i>'
+assert srt[0].content == '#BlackLivesMatter'
+assert srt[1].content == '♪ BlackLivesMatter ♪'
+assert srt[2].content == '♪ #BlackLivesMatter ♪'
+assert srt[3].content == '♪ Song Lyrics ♪'
+assert srt[4].content == 'We are #1!'
+assert srt[5].content == '<i>♪ Song Lyrics</i>'
+assert srt[6].content == '♪ Song Lyrics\nOn two separate lines ♪'
+assert srt[7].content == '#1 Radio Station'
+assert srt[8].content == 'ABCD FM\n#1 Radio Station'
+assert srt[9].content == '#One Radio Station'
+assert srt[20].content == '<i>♪ Fire ♪</i>'
 
 # Test adding missing line breaks
-assert srt[10].text == "- It's chocolate.\n- Hmm?"
-assert srt[11].text == "- We can't just leave him.\n- He's already gone."
+assert srt[10].content == "- It's chocolate.\n- Hmm?"
+assert srt[11].content == "- We can't just leave him.\n- He's already gone."
 
 # Test ellipsis fixes
-assert srt[12].text == "...noooooooooooooo..."
-assert srt[13].text == "Stop this..."
+assert srt[12].content == "...noooooooooooooo..."
+assert srt[13].content == "Stop this..."
 
 # Test tag corrections
-assert srt[14].text == "<i>Test line1\nTest</i> line2"
-assert srt[15].text == "{\\an8}<i>Test line1\nTest line2</i>"
-assert srt[16].text == "test"
-assert srt[17].text == "<i>test</i>"
+assert srt[14].content == "<i>Test line1\nTest</i> line2"
+assert srt[15].content == "{\\an8}<i>Test line1\nTest line2</i>"
+assert srt[16].content == "test"
+assert srt[17].content == "<i>test</i>"
 
 # Test 83 ms gap removal
-assert srt[18].end == srt[19].start == pysrt.SubRipTime(minutes=19, milliseconds=100)
-assert srt2[0].end == pysrt.SubRipTime(minutes=19, milliseconds=100)
-assert srt2[1].start == pysrt.SubRipTime(minutes=19, milliseconds=183)
+assert srt[18].end == srt[19].start == timedelta(minutes=19, milliseconds=100)
+assert srt2[0].end == timedelta(minutes=19, milliseconds=100)
+assert srt2[1].start == timedelta(minutes=19, milliseconds=183)
 
 # Test redundant space removal
-assert srt[21].text == "<i>SOMETHING:\nSynthetic test.\nDefinitely not real.</i>"
+assert srt[21].content == "<i>SOMETHING:\nSynthetic test.\nDefinitely not real.</i>"
+
+# Test adding spaces after frontal hyphens (dialogue)
+assert srt[22].content == "- Well.\n- $5000?"

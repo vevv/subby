@@ -1,10 +1,10 @@
 from html.parser import HTMLParser
 
-import pysrt
+from srt import Subtitle
 
 from subby.converters.base import BaseConverter
 from subby.subripfile import SubRipFile
-from subby.utils import timestamp_from_ms
+from subby.utils import timedelta_from_ms
 
 
 class SAMIConverter(BaseConverter):
@@ -37,7 +37,7 @@ class _SAMIConverter(HTMLParser):
             data.update(attrs)
             self.lines.append(data)
 
-        self.tags.append(dict(name=tag, attrs=attrs))
+        self.tags.append({'name': tag, 'attrs': attrs})
 
     def handle_data(self, data):
         last_tag = self.tags[-1]['name']
@@ -56,7 +56,7 @@ class _SAMIConverter(HTMLParser):
         for num, line in enumerate(self.lines):
             # Use empty lines as the end of previous line
             if not line.get('text', '').strip():
-                end_time = timestamp_from_ms(float(line['start']))
+                end_time = float(line['start'])
                 self.line_list[-1]['end'] = end_time
                 continue
 
@@ -64,19 +64,20 @@ class _SAMIConverter(HTMLParser):
                 # Arbitrarily set duration to 4s if end time not present
                 line['end'] = float(line['start']) + 4000
 
-            for time in ('start', 'end'):
-                line[time] = timestamp_from_ms(float(line[time]))
-
-            srt_line = dict(
-                index=num,
-                start=line['start'],
-                end=line['end'],
-                text=line['text'].strip()
-            )
+            srt_line = {
+                'start': float(line['start']),
+                'end': float(line['end']),
+                'content': line['text'].strip()
+            }
             self.line_list.append(srt_line)
 
-        for line in self.line_list:
-            srt_line = pysrt.SubRipItem(**line)
+        for num, line in enumerate(self.line_list):
+            srt_line = Subtitle(
+                index=num,
+                start=timedelta_from_ms(line['start']),
+                end=timedelta_from_ms(line['end']),
+                content=line['content']
+            )
             self.srt.append(srt_line)
 
     @staticmethod

@@ -4,11 +4,12 @@ import html
 import re
 from typing import Optional
 
-import pysrt
 import tinycss
+from srt import Subtitle
 
 from subby.converters.base import BaseConverter
 from subby.subripfile import SubRipFile
+from subby.utils import timedelta_from_timestamp
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
 STYLE_TAG = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)<\/c>$')
@@ -61,7 +62,7 @@ class WebVTTConverter(BaseConverter):
                 if not text:
                     continue
 
-                srt[-1].text = '\n'.join(text)
+                srt[-1].content = '\n'.join(text)
                 text = []
                 looking_for_text = False
 
@@ -85,10 +86,11 @@ class WebVTTConverter(BaseConverter):
                 if end.count(':') == 1:
                     end = f'00:{end}'
 
-                srt.append(pysrt.SubRipItem(
+                srt.append(Subtitle(
                     index=line_number,
-                    start=start,
-                    end=end
+                    start=timedelta_from_timestamp(start),
+                    end=timedelta_from_timestamp(end),
+                    content=''
                 ))
                 looking_for_text = True
                 line_number += 1
@@ -116,7 +118,7 @@ class WebVTTConverter(BaseConverter):
 
         # Add any leftover text to the last line
         if text:
-            srt[-1].text += '\n'.join(text)
+            srt[-1].content += '\n'.join(text)
 
         return srt
 

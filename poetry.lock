@@ -19,17 +19,6 @@ html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
-name = "chardet"
-version = "5.2.0"
-description = "Universal encoding detector for Python 3"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "chardet-5.2.0-py3-none-any.whl", hash = "sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970"},
-    {file = "chardet-5.2.0.tar.gz", hash = "sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7"},
-]
-
-[[package]]
 name = "click"
 version = "8.1.7"
 description = "Composable command line interface toolkit"
@@ -79,19 +68,6 @@ files = [
 construct = "2.8.8"
 
 [[package]]
-name = "pysrt"
-version = "1.1.2"
-description = "SubRip (.srt) subtitle parser and writer"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pysrt-1.1.2.tar.gz", hash = "sha256:b4f844ba33e4e7743e9db746492f3a193dc0bc112b153914698e7c1cdeb9b0b9"},
-]
-
-[package.dependencies]
-chardet = "*"
-
-[[package]]
 name = "soupsieve"
 version = "2.5"
 description = "A modern CSS selector implementation for Beautiful Soup."
@@ -100,6 +76,16 @@ python-versions = ">=3.8"
 files = [
     {file = "soupsieve-2.5-py3-none-any.whl", hash = "sha256:eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7"},
     {file = "soupsieve-2.5.tar.gz", hash = "sha256:5663d5a7b3bfaeee0bc4372e7fc48f9cff4940b3eec54a6451cc5299f1097690"},
+]
+
+[[package]]
+name = "srt"
+version = "3.5.3"
+description = "A tiny library for parsing, modifying, and composing SRT files."
+optional = false
+python-versions = ">=2.7"
+files = [
+    {file = "srt-3.5.3.tar.gz", hash = "sha256:4884315043a4f0740fd1f878ed6caa376ac06d70e135f306a6dc44632eed0cc0"},
 ]
 
 [[package]]
@@ -118,4 +104,4 @@ test = ["pytest-cov", "pytest-flake8", "pytest-isort", "pytest-runner"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "52bfd1a3ded252ba853f55522f778ec1072a20719399c0bf45a98ce80aff7e94"
+content-hash = "333cb982e724f11f3fc0f0cd1216ef70e36fbd1a8482071bf72f3cf3bdb0d730"

@@ -1,23 +1,32 @@
 from __future__ import annotations
 
-import pysrt
+from collections import UserList
+from pathlib import Path
+
+import srt
 
 
-class SubRipFile(pysrt.SubRipFile):
+class SubRipFile(UserList):
+    def __init__(self, data: list[srt.Subtitle] | None = None):
+        self.data: list[srt.Subtitle] = data or []
+
+    @classmethod
+    def from_string(cls, source: str):
+        return cls(list(srt.parse(source)))
+
+    def clean_indexes(self):
+        self.data = list(srt.sort_and_reindex(self.data))
+
     def export(self, eol: str | None = None) -> str:
         """Exports subtitle as text"""
-        output_eol = eol or self.eol
-        output_text = ''
+        return srt.compose(self.data, eol=eol)
 
-        for item in self:
-            string_repr = str(item)
-            if output_eol != '\n':
-                string_repr = string_repr.replace('\n', output_eol)
-            output_text += string_repr
-            if not string_repr.endswith(2 * output_eol):
-                output_text += output_eol
-
-        return output_text
+    def save(self, path: Path, encoding: str = 'utf-8-sig', eol: str | None = None):
+        """Exports subtitle as text"""
+        with path.open(mode='wb') as fp:
+            fp.write(srt.compose(self.data, eol=eol).encode(encoding))
 
     def __eq__(self, other):
+        if not isinstance(other, SubRipFile):
+            raise NotImplementedError
         return self.export(eol='\n') == other.export(eol='\n')
