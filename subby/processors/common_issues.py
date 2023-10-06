@@ -247,13 +247,15 @@ class CommonIssuesFixer(BaseProcessor):
     @staticmethod
     def _fix_time_codes(srt: SubRipFile) -> SubRipFile:
         """Fixes timecodes over 23:59, often present in live content"""
-        return srt
         offset = 0
         for line in srt:
-            if not offset and line.start.hours > 23:
-                offset = line.start.hours
-            line.start.hours -= offset
-            line.end.hours -= offset
+            hours, _ = divmod(line.start.seconds, 3600)
+            hours += line.start.days * 24
+
+            if not offset and hours > 23:
+                offset = hours
+            line.start -= datetime.timedelta(hours=hours)
+            line.end -= datetime.timedelta(hours=hours)
         return srt
 
     @staticmethod
