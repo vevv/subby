@@ -103,6 +103,14 @@ Definitely not real.</i>
 00:23:00,000 --> 00:23:01,000
 -Well.
 -$5000?
+
+24
+27:27:00,000 --> 27:27:01,000
+Always. Run. Tests.
+
+25
+28:27:00,000 --> 28:27:01,000
+Really.
 ''')
 
 fixer.remove_gaps = False
@@ -151,3 +159,8 @@ assert srt[21].content == "<i>SOMETHING:\nSynthetic test.\nDefinitely not real.<
 
 # Test adding spaces after frontal hyphens (dialogue)
 assert srt[22].content == "- Well.\n- $5000?"
+
+# Test invalid timestamp fixing
+assert srt[22].start == timedelta(minutes=23)
+assert srt[23].start == timedelta(minutes=27)
+assert srt[24].start == timedelta(hours=1, minutes=27)

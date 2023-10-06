@@ -254,8 +254,9 @@ class CommonIssuesFixer(BaseProcessor):
 
             if not offset and hours > 23:
                 offset = hours
-            line.start -= datetime.timedelta(hours=hours)
-            line.end -= datetime.timedelta(hours=hours)
+            if offset:
+                line.start -= datetime.timedelta(hours=offset)
+                line.end -= datetime.timedelta(hours=offset)
         return srt
 
     @staticmethod
