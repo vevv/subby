@@ -6,9 +6,9 @@ from pathlib import Path
 
 import click
 
-from subby import (CommonIssuesFixer, ISMTConverter, SAMIConverter,
-                   SDHStripper, SMPTEConverter, WebVTTConverter, WVTTConverter,
-                   __version__)
+from subby import (BilibiliJSONConverter, CommonIssuesFixer, ISMTConverter,
+                   SAMIConverter, SDHStripper, SMPTEConverter, WebVTTConverter,
+                   WVTTConverter, __version__)
 
 
 @click.group()
@@ -87,6 +87,9 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
     elif b"WEBVTT" in data:
         log.info("Subtitle format: WebVTT")
         converter = WebVTTConverter()
+    elif data.startswith(b'{') and b'"Stroke"' in data and b'"background_color"' in data:
+        log.info("Subtitle format: JSON (Bilibili)")
+        converter = BilibiliJSONConverter()
 
     if not converter:
         log.error("Subtitle format was unrecognized...")

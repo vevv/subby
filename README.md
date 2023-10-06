@@ -2,7 +2,7 @@
 Advanced subtitle converter and processor.
 
 # Supported formats
-WebVTT, DFXP/TTML/TTML2/SMPTE, SAMI, WVTT (WebVTT in MP4), STPP/ISMT (DFXP in MP4)
+WebVTT, DFXP/TTML/TTML2/SMPTE, SAMI, WVTT (WebVTT in MP4), STPP/ISMT (DFXP in MP4), JSON (Bilibili)
 
 # Functionality
 - converts supported input format to SRT

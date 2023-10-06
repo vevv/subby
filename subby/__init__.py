@@ -1,3 +1,4 @@
+from subby.converters.bilibili_json import BilibiliJSONConverter
 from subby.converters.mp4 import ISMTConverter, WVTTConverter
 from subby.converters.sami import SAMIConverter
 from subby.converters.smpte import SMPTEConverter
@@ -13,6 +14,7 @@ __all__ = [
     'SAMIConverter',
     'SMPTEConverter', 'ISMTConverter',
     'WebVTTConverter', 'WVTTConverter',
+    'BilibiliJSONConverter',
     # Processors
     'CommonIssuesFixer',
     'SDHStripper',
