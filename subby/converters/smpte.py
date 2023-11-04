@@ -56,8 +56,8 @@ class _SMPTEConverter:
 
     def _convert(self):
         try:
-            self.root.tt.body.div
-        except AttributeError:
+            assert self.root.tt.body.div is not None
+        except (AttributeError, AssertionError):
             return
 
         for num, line in enumerate(self.root.tt.body.div.find_all('p'), 1):
