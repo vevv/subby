@@ -148,7 +148,11 @@ class CommonIssuesFixer(BaseProcessor):
             #
             # Adds missing line splits (primarily present in Amazon subtitles)
             line = re.sub(r'(.*)([^.][\]\)])([A-Z][^.])', r'\1\2\n\3', line)
-            line = re.sub(r'(.*)([^\.\sA-Z][!\.;:?])([A-Z][^.])', r'- \1\2\n- \3', line)
+            line = re.sub(
+                r'(.*)([^\.\sA-Z][!\.;:?])(?<!(?:Mr|Ms)\.)(?<!Mrs\.)([A-Z][^.])',
+                r'- \1\2\n- \3',
+                line
+            )
             # Fix weird linebreaks (caused by stripping SDH or not)
             for _ in range(2):
                 line = re.sub(
