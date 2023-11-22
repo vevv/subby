@@ -190,7 +190,8 @@ class CommonIssuesFixer(BaseProcessor):
 
         # Remove italics if every line is italicized, as this is almost certainly a mistake
         # (using slices should be more performant than regex or startswith/endswith)
-        if all(line.content[:3] == '<i>' and line.content[-4:] == '</i>' for line in srt):
+        if len(srt) > 10 \
+                and all(line.content[:3] == '<i>' and line.content[-4:] == '</i>' for line in srt):
             for line in srt:
                 line.content = line.content[3:-4]
 
