@@ -115,6 +115,9 @@ if status is True:
     # saved to file_stripped.srt
 ```
 
+## Tests
+To run tests, go to the "tests" directory and run `pytest`.
+
 ## Contributors
 
 <a href="https://github.com/vevv"><img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/68520787?v=4&h=25&w=25&fit=cover&mask=circle&maxage=7d" alt=""/></a>

@@ -2,18 +2,18 @@ from datetime import timedelta
 
 from subby import CommonIssuesFixer
 
-fixer = CommonIssuesFixer()
-srt, _ = fixer.from_string('''1
+
+MUSICAL_NOTE_EXAMPLE = '''1
 00:01:00,000 --> 00:01:01,000
-#BlackLivesMatter
+#TestData
 
 2
 00:02:00,000 --> 00:02:01,000
-#BlackLivesMatter#
+#TestData#
 
 3
 00:03:00,000 --> 00:03:01,000
-# #BlackLivesMatter #
+# #TestData #
 
 4
 00:04:00,000 --> 00:04:01,000
@@ -47,120 +47,168 @@ ABCD FM
 
 11
 00:11:00,000 --> 00:11:01,000
+♪ <i>Fire</i>♪'''
+
+
+ADDING_LINE_BREAKS_EXAMPLE = '''1
+00:01:00,000 --> 00:01:01,000
 It's chocolate.Hmm?
 
-12
-00:12:00,000 --> 00:12:01,000
+2
+00:02:00,000 --> 00:02:01,000
 We can't just leave him.He's already gone.
 
-13
+3
+00:03:26,800 --> 00:03:31,200
+- Test. Mr.Teufel...
+- Test...'''
+
+
+ELIPSES_FIXING_EXAMPLE = '''1
 00:13:00,000 --> 00:13:01,000
 ..noooooooooooooo..........
 
-14
+2
 00:14:00,000 --> 00:14:01,000
-Stop this.................
+Stop this.................'''
 
-15
+
+TAG_CORRECTIONS_EXAMPLE = '''1
 00:15:00,000 --> 00:15:01,000
 <i>    Test</i> <i>line1</i>
 <i>Test </i>line2
 
-16
+2
 00:16:00,000 --> 00:16:01,000
 {\\an3}{\\an8}{\\an8}<i><i>Test line1
 Test line2</i>
 
-17
+3
 00:17:00,000 --> 00:17:01,000
 <b>test</b>
 
-18
+4
 00:18:00,000 --> 00:18:01,000
 <i>   
 test
-</i>
+</i>'''
 
-19
+
+GAP_REMOVAL_EXAMPLE = '''1
 00:19:00,000 --> 00:19:00,100
 remove 2 frame gap between this
 
-20
+2
 00:19:00,183 --> 00:19:01,000
-and that line
+and that line'''
 
-21
-00:21:00,000 --> 00:21:01,000
-♪ <i>Fire</i>♪
 
-22
+SPACE_REMOVAL_EXAMPLE = '''
+1
 00:22:00,000 --> 00:22:01,000
 <i>SOMETHING:</i> <i>
 Synthetic test.</i> <i>
 Definitely not real.</i>
+'''
 
-23
+SPACES_AFTER_HYPHENS_EXAMPLE = '''1
 00:23:00,000 --> 00:23:01,000
 -Well.
--$5000?
+-$5000?'''
 
-24
+INVALID_TIMESTAMP_EXAMPLE = '''1
 27:27:00,000 --> 27:27:01,000
 Always. Run. Tests.
 
-25
-28:27:00,000 --> 28:27:01,000
-Really.
-''')
-
-fixer.remove_gaps = False
-srt2, _ = fixer.from_string('''1
-00:19:00,000 --> 00:19:00,100
-do not remove 2 frame gap between this
-
 2
-00:19:00,183 --> 00:19:01,000
-and that line''')
+28:27:00,000 --> 28:27:01,000
+Really.'''
 
-# Test correct musical note conversion
-assert srt[0].content == '#BlackLivesMatter'
-assert srt[1].content == '♪ BlackLivesMatter ♪'
-assert srt[2].content == '♪ #BlackLivesMatter ♪'
-assert srt[3].content == '♪ Song Lyrics ♪'
-assert srt[4].content == 'We are #1!'
-assert srt[5].content == '<i>♪ Song Lyrics</i>'
-assert srt[6].content == '♪ Song Lyrics\nOn two separate lines ♪'
-assert srt[7].content == '#1 Radio Station'
-assert srt[8].content == 'ABCD FM\n#1 Radio Station'
-assert srt[9].content == '#One Radio Station'
-assert srt[20].content == '<i>♪ Fire ♪</i>'
+
+def test_musical_notes():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(MUSICAL_NOTE_EXAMPLE)
+    # Test correct musical note conversion
+    assert srt[0].content == '#TestData'
+    assert srt[1].content == '♪ TestData ♪'
+    assert srt[2].content == '♪ #TestData ♪'
+    assert srt[3].content == '♪ Song Lyrics ♪'
+    assert srt[4].content == 'We are #1!'
+    assert srt[5].content == '<i>♪ Song Lyrics</i>'
+    assert srt[6].content == '♪ Song Lyrics\nOn two separate lines ♪'
+    assert srt[7].content == '#1 Radio Station'
+    assert srt[8].content == 'ABCD FM\n#1 Radio Station'
+    assert srt[9].content == '#One Radio Station'
+    assert srt[10].content == '<i>♪ Fire ♪</i>'
+
 
 # Test adding missing line breaks
-assert srt[10].content == "- It's chocolate.\n- Hmm?"
-assert srt[11].content == "- We can't just leave him.\n- He's already gone."
+def test_adding_line_breaks():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(ADDING_LINE_BREAKS_EXAMPLE)
+    assert srt[0].content == "- It's chocolate.\n- Hmm?"
+    assert srt[1].content == "- We can't just leave him.\n- He's already gone."
+    assert srt[2].content == "- Test. Mr.Teufel...\n- Test..."
 
-# Test ellipsis fixes
-assert srt[12].content == "...noooooooooooooo..."
-assert srt[13].content == "Stop this..."
+
+# Test ellipses fixing
+def test_elipses_fixing():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(ELIPSES_FIXING_EXAMPLE)
+    assert srt[0].content == "...noooooooooooooo..."
+    assert srt[1].content == "Stop this..."
+
 
 # Test tag corrections
-assert srt[14].content == "<i>Test line1\nTest</i> line2"
-assert srt[15].content == "{\\an8}<i>Test line1\nTest line2</i>"
-assert srt[16].content == "test"
-assert srt[17].content == "<i>test</i>"
+def test_tag_corrections():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(TAG_CORRECTIONS_EXAMPLE)
+    assert srt[0].content == "<i>Test line1\nTest</i> line2"
+    assert srt[1].content == "{\\an8}<i>Test line1\nTest line2</i>"
+    assert srt[2].content == "test"
+    assert srt[3].content == "<i>test</i>"
+
 
 # Test 83 ms gap removal
-assert srt[18].end == srt[19].start == timedelta(minutes=19, milliseconds=100)
-assert srt2[0].end == timedelta(minutes=19, milliseconds=100)
-assert srt2[1].start == timedelta(minutes=19, milliseconds=183)
+def test_gap_removal():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(GAP_REMOVAL_EXAMPLE)
+    assert srt[0].end == srt[1].start == timedelta(minutes=19, milliseconds=100)
+
+    fixer.remove_gaps = False
+    srt2, _ = fixer.from_string(GAP_REMOVAL_EXAMPLE)
+    assert srt2[0].end == timedelta(minutes=19, milliseconds=100)
+    assert srt2[1].start == timedelta(minutes=19, milliseconds=183)
+
 
 # Test redundant space removal
-assert srt[21].content == "<i>SOMETHING:\nSynthetic test.\nDefinitely not real.</i>"
+def test_redundant_space_removal():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(SPACE_REMOVAL_EXAMPLE)
+    assert srt[0].content == "<i>SOMETHING:\nSynthetic test.\nDefinitely not real.</i>"
+
 
 # Test adding spaces after frontal hyphens (dialogue)
-assert srt[22].content == "- Well.\n- $5000?"
+def test_adding_spaces_after_frontal_hyphens():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(SPACES_AFTER_HYPHENS_EXAMPLE)
+    assert srt[0].content == "- Well.\n- $5000?"
+
 
 # Test invalid timestamp fixing
-assert srt[22].start == timedelta(minutes=23)
-assert srt[23].start == timedelta(minutes=27)
-assert srt[24].start == timedelta(hours=1, minutes=27)
+def test_invalid_timestamp_fixing():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(INVALID_TIMESTAMP_EXAMPLE)
+    assert srt[0].start == timedelta(minutes=27)
+    assert srt[1].start == timedelta(hours=1, minutes=27)
+
+
+if __name__ == "__main__":
+    test_musical_notes()
+    test_adding_line_breaks()
+    test_elipses_fixing()
+    test_tag_corrections()
+    test_gap_removal()
+    test_redundant_space_removal()
+    test_adding_spaces_after_frontal_hyphens()
+    test_invalid_timestamp_fixing()
