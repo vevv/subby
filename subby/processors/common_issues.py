@@ -154,14 +154,6 @@ class CommonIssuesFixer(BaseProcessor):
                 line
             )
             # Fix weird linebreaks (caused by stripping SDH or not)
-            for _ in range(2):
-                line = re.sub(
-                    (r'((?:<[a-z]>)?[\w\.\,]+(?:</[a-z]>)?) ((?:<[a-z]>)?[\w\.\,]+'
-                     r'(?:</[a-z]>)?)(?:^|\n)((?:<[a-z]>)?[\w\.\,]+(?:</[a-z]>)?)'
-                     r'(?:\n|$)'),
-                    r'\1 \2 \3\n',
-                    line
-                )
             line = re.sub(r'(^<[a-z]>|\n<[a-z]>)(\w+)\n', r'\1\2 ', line)
             # Add missing hyphens
             line = re.sub(r'^\s*(?!-)(.*)\n- ([A-Z][a-z]+)$', r'- \1\n- \2', line)
