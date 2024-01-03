@@ -1,3 +1,5 @@
+import re
+
 from collections import deque
 
 from pymp4.parser import MP4
@@ -15,10 +17,16 @@ class ISMTConverter(BaseConverter):
 
     def parse(self, stream):
         srt = SubRipFile([])
-        for box in MP4.parse(stream.read()):
+        content = stream.read()
+        for box in MP4.parse(content):
             if box.type == b'mdat':
                 srt.extend(SMPTEConverter().from_bytes(box.data))
-
+        if not srt:
+            for mdat in re.compile(b'(\x00\x00..mdat.*?\x00\x00)', re.DOTALL).findall(content):
+                for box in MP4.parse(mdat):
+                    if box.type == b'mdat':
+                        srt.extend(SMPTEConverter().from_bytes(box.data))
+        del content
         return srt
 
 
