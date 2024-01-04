@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import UserList
+from datetime import timedelta
 from pathlib import Path
 
 import srt
@@ -16,6 +17,11 @@ class SubRipFile(UserList):
 
     def clean_indexes(self):
         self.data = list(srt.sort_and_reindex(self.data))
+
+    def offset(self, offset: timedelta):
+        for line in self.data:
+            line.start += offset
+            line.end += offset
 
     def export(self, eol: str | None = None) -> str:
         """Exports subtitle as text"""

@@ -7,7 +7,7 @@ from subby.processors.common_issues import CommonIssuesFixer
 from subby.processors.sdh import SDHStripper
 from subby.subripfile import SubRipFile
 
-__version__ = '0.2.7'
+__version__ = '0.2.8'
 
 __all__ = [
     # Converters

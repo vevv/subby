@@ -17,7 +17,14 @@ class ISMTConverter(BaseConverter):
         srt = SubRipFile([])
         for box in MP4.parse(stream.read()):
             if box.type == b'mdat':
-                srt.extend(SMPTEConverter().from_bytes(box.data))
+                new = SMPTEConverter().from_bytes(box.data)
+
+                # Offset timecodes if necessary
+                # https://github.com/SubtitleEdit/subtitleedit/blob/abd36e5/src/libse/SubtitleFormats/IsmtDfxp.cs#L85-L90
+                if srt and new and srt[-1].start > new[0].start:
+                    new.offset(srt[-1].end)
+
+                srt.extend(new)
 
         return srt
 
