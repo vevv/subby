@@ -7,7 +7,7 @@ from srt import Subtitle
 
 from subby.converters.base import BaseConverter
 from subby.subripfile import SubRipFile
-from subby.utils import timedelta_from_timestamp, timestamp_from_ms
+from subby.utils.time import timedelta_from_timestamp, timestamp_from_ms
 
 
 class SMPTEConverter(BaseConverter):

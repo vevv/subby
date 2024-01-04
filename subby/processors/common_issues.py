@@ -7,7 +7,7 @@ import unicodedata
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
 from subby.subripfile import SubRipFile
-from subby.utils import line_duration
+from subby.utils.time import line_duration
 
 
 class CommonIssuesFixer(BaseProcessor):

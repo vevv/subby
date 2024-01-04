@@ -9,7 +9,7 @@ from srt import Subtitle
 
 from subby.converters.base import BaseConverter
 from subby.subripfile import SubRipFile
-from subby.utils import timedelta_from_timestamp
+from subby.utils.time import timedelta_from_timestamp
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
 STYLE_TAG = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)<\/c>$')

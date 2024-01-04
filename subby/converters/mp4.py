@@ -7,7 +7,7 @@ from subby.converters.base import BaseConverter
 from subby.converters.smpte import SMPTEConverter
 from subby.converters.webvtt import WebVTTConverter
 from subby.subripfile import SubRipFile
-from subby.utils import timestamp_from_ms
+from subby.utils.time import timestamp_from_ms
 
 
 class ISMTConverter(BaseConverter):
