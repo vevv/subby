@@ -81,7 +81,7 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
     elif b"<SAMI>" in data:
         log.info("Subtitle format: SAMI")
         converter = SAMIConverter()
-    elif b"</tt>" in data or b"</tt:tt>":
+    elif b"</tt>" in data or b"</tt:tt>" in data:
         log.info("Subtitle format: DFXP/TTML/TTML2")
         converter = SMPTEConverter()
     elif b"WEBVTT" in data:
