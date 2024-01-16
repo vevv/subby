@@ -12,7 +12,9 @@ from subby.subripfile import SubRipFile
 from subby.utils.time import timedelta_from_timestamp
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
+STYLE_TAG_OPEN = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)')
 STYLE_TAG = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)<\/c>$')
+STYLE_TAG_CLOSE = re.compile(r'<\/c>$')
 SKIP_WORDS = ('WEBVTT', 'NOTE', '/*')
 
 
@@ -23,9 +25,10 @@ class WebVTTConverter(BaseConverter):
         srt = SubRipFile()
         looking_for_text = False
         looking_for_style = False
+        italics_on = False
         text = []
         position = None
-        line_number: int = 1
+        line_number = 1
         styles = {}
         current_style = []
 
@@ -104,6 +107,13 @@ class WebVTTConverter(BaseConverter):
                 if m := re.match(STYLE_TAG, line):
                     if (s := styles.get(m[1])) and s.get('font-style') == 'italic':
                         line = f'<i>{m[2]}</i>'
+                elif m := re.match(STYLE_TAG_OPEN, line):
+                    if (s := styles.get(m[1])) and s.get('font-style') == 'italic':
+                        line = f'<i>{m[2]}</i>'
+                        italics_on = True
+                elif italics_on:
+                    italics_on = re.search(STYLE_TAG_CLOSE, line) is None
+                    line = f'<i>{line.strip("</c>")}</i>'
 
                 # Strip non-italic tags
                 line = re.sub(HTML_TAG, '', line)
