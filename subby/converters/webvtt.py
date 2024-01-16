@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import re
+from functools import partial
 from typing import Optional
 
 import tinycss
@@ -13,7 +14,7 @@ from subby.utils.time import timedelta_from_timestamp
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
 STYLE_TAG_OPEN = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)')
-STYLE_TAG = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)<\/c>$')
+STYLE_TAG = re.compile(r'<c.([a-zA-Z0-9]+)>([^<]+)<\/c>')
 STYLE_TAG_CLOSE = re.compile(r'<\/c>$')
 SKIP_WORDS = ('WEBVTT', 'NOTE', '/*')
 
@@ -103,11 +104,16 @@ class WebVTTConverter(BaseConverter):
                 # Unescape html entities
                 line = html.unescape(line)
 
-                # Parse styles
-                if m := re.match(STYLE_TAG, line):
-                    if (s := styles.get(m[1])) and s.get('font-style') == 'italic':
-                        line = f'<i>{m[2]}</i>'
-                elif m := re.match(STYLE_TAG_OPEN, line):
+                # Replace styles with italics tag when appropriate
+                # (replace instead of match, to handle nested)
+                line = re.sub(
+                    STYLE_TAG,
+                    partial(self._replace_italics, styles=styles),
+                    line
+                )
+
+                # Handle multi-line styles
+                if m := re.match(STYLE_TAG_OPEN, line):
                     if (s := styles.get(m[1])) and s.get('font-style') == 'italic':
                         line = f'<i>{m[2]}</i>'
                         italics_on = True
@@ -150,3 +156,9 @@ class WebVTTConverter(BaseConverter):
                 break
 
         return position
+
+    @staticmethod
+    def _replace_italics(match: re.Match, styles: dict[str, dict[str, str]]) -> str:
+        if (s := styles.get(match[1])) and s.get('font-style') == 'italic':
+            return f'<i>{match[2]}</i>'
+        return match[0]
