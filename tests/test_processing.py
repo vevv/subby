@@ -47,7 +47,15 @@ ABCD FM
 
 11
 00:11:00,000 --> 00:11:01,000
-♪ <i>Fire</i>♪'''
+♪ <i>Fire</i>♪
+
+12
+00:12:00,000 --> 00:12:01,000
+*Schnaub*
+
+13
+00:13:00,000 --> 00:13:01,000
+* Schnaub *'''
 
 
 ADDING_LINE_BREAKS_EXAMPLE = '''1
@@ -130,7 +138,7 @@ def test_musical_notes():
     srt, _ = fixer.from_string(MUSICAL_NOTE_EXAMPLE)
     # Test correct musical note conversion
     assert srt[0].content == '#TestData'
-    assert srt[1].content == '♪ TestData ♪'
+    assert srt[1].content == '#TestData#'
     assert srt[2].content == '♪ #TestData ♪'
     assert srt[3].content == '♪ Song Lyrics ♪'
     assert srt[4].content == 'We are #1!'
@@ -140,6 +148,8 @@ def test_musical_notes():
     assert srt[8].content == 'ABCD FM\n#1 Radio Station'
     assert srt[9].content == '#One Radio Station'
     assert srt[10].content == '<i>♪ Fire ♪</i>'
+    assert srt[11].content == '*Schnaub*'
+    assert srt[12].content == '♪ Schnaub ♪'
 
 
 # Test adding missing line breaks

@@ -39,14 +39,14 @@ class CommonIssuesFixer(BaseProcessor):
             line = line.replace(r'‐', r'-')
             # Replace hashes, asterisks at the start of a line with a musical note
             line = re.sub(
-                r'^((?:{\\an8})?(?:<i>)?)(-)?(?:[#\*]{1,}|[#\*]{1,})(?=\s+|(?:.*#</i>$|.*#$))',
+                r'^((?:{\\an8})?(?:<i>)?)(-)?[#\*]{1,}(?=\s+)',
                 r'\1\2♪',
                 line,
                 flags=re.M
             )
             # Replace hashes, asterisks at the end of a line with a musical note
             line = re.sub(
-                r'(?<![#\*])(?:[#\*]{1,3}|[#\*]{1,3})(?![0-9A-Z])(</i>$|$)',
+                r'(?<=\s)(?<![#\*])(?:[#\*]{1,3}|[#\*]{1,3})(?![0-9A-Z])(</i>$|$)',
                 r'♪\1',
                 line,
                 flags=re.M
