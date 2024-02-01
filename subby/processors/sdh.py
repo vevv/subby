@@ -59,7 +59,7 @@ class SDHStripper(BaseProcessor):
     def _clean_inline_descriptions(self, srt):
         """Removes inline"""
         for line in srt:
-            line.content = re.sub(Regex.FRONT_DESCRIPTION_BRACKET, r'\8', line.content, flags=re.M)
+            line.content = re.sub(Regex.FRONT_DESCRIPTION_BRACKET, r'\9', line.content, flags=re.M)
             line.content = re.sub(Regex.FRONT_DESCRIPTION_PARENTHESES, r'\1', line.content, flags=re.M)
             for regex in (
                 Regex.END_DESCRIPTION_BRACKET,
@@ -75,7 +75,7 @@ class SDHStripper(BaseProcessor):
         for line in srt:
             # Retain frontal tags/hyphens
             for regex in (Regex.SPEAKER_PARENTHESES, Regex.SPEAKER):
-                line.content = re.sub(regex, r'\2', line.content, flags=re.M).strip()
+                line.content = re.sub(regex, r'\2\3', line.content, flags=re.M).strip()
             yield line
 
     def _strip_notes(self, srt):
