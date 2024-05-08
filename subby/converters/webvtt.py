@@ -119,7 +119,7 @@ class WebVTTConverter(BaseConverter):
                         italics_on = True
                 elif italics_on:
                     italics_on = re.search(STYLE_TAG_CLOSE, line) is None
-                    line = f'<i>{line.strip("</c>")}</i>'
+                    line = f'<i>{line.replace("</c>", "</i>")}'
 
                 # Strip non-italic tags
                 line = re.sub(HTML_TAG, '', line)
