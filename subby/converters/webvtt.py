@@ -104,26 +104,6 @@ class WebVTTConverter(BaseConverter):
                 # Unescape html entities
                 line = html.unescape(line)
 
-                # Replace styles with italics tag when appropriate
-                # (replace instead of match, to handle nested)
-                line = re.sub(
-                    STYLE_TAG,
-                    partial(self._replace_italics, styles=styles),
-                    line
-                )
-
-                # Handle multi-line styles
-                if m := re.match(STYLE_TAG_OPEN, line):
-                    if (s := styles.get(m[1])) and s.get('font-style') == 'italic':
-                        line = f'<i>{m[2]}</i>'
-                        italics_on = True
-                elif italics_on:
-                    italics_on = re.search(STYLE_TAG_CLOSE, line) is None
-                    line = f'<i>{line.replace("</c>", "</i>")}'
-
-                # Strip non-italic tags
-                line = re.sub(HTML_TAG, '', line)
-
                 # Set \an8 tag if position is below 25
                 # (value taken from SubtitleEdit)
                 if position is not None and position < 25:
@@ -135,6 +115,18 @@ class WebVTTConverter(BaseConverter):
         # Add any leftover text to the last line
         if text:
             srt[-1].content += '\n'.join(text)
+
+        for line in srt:
+            # Replace styles with italics tag when appropriate
+            # (replace instead of match, to handle nested)
+            line.content = re.sub(
+                STYLE_TAG,
+                partial(self._replace_italics, styles=styles),
+                line.content
+            )
+
+            # Strip non-italic tags
+            line.content = re.sub(HTML_TAG, '', line.content)
 
         return srt
 
