@@ -26,7 +26,6 @@ class WebVTTConverter(BaseConverter):
         srt = SubRipFile()
         looking_for_text = False
         looking_for_style = False
-        italics_on = False
         text = []
         position = None
         line_number = 1
@@ -79,7 +78,7 @@ class WebVTTConverter(BaseConverter):
                 current_style.append(line)
 
             # Check for time line
-            elif '-->' in line:
+            elif ' --> ' in line:
                 parts = line.strip().split()
                 position = self._get_position([p for p in parts[3:] if ':' in p])
 
