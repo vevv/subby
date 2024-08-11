@@ -24,6 +24,7 @@ class SDHStripper(BaseProcessor):
         stripped = self._clean_inline_descriptions(stripped)
         stripped = self._clean_speaker_names(stripped)
         stripped = self._strip_notes(stripped)
+        stripped = self._remove_extra_hyphens(stripped)
         stripped = self._run_extra_regexes(stripped)
 
         stripped = SubRipFile([line for line in stripped if line.content])
@@ -92,6 +93,16 @@ class SDHStripper(BaseProcessor):
             for regex in self.extra_regexes:
                 line.content = re.sub(regex, r'', line.content)
             yield line
+
+    def _remove_extra_hyphens(self, srt):
+        """Remove speaker hyphens if there's only one line"""
+        for line in srt:
+            splits = len(re.findall(r'^(<i>|\{\\an8\})?-\s*', line.content, flags=re.M))
+            if splits == 1:
+                line.content = re.sub(r'^(<i>|\{\\an8\})?-\s*', r'\1', line.content.strip())
+
+            yield line
+
 
     @staticmethod
     def _strip_tags(text: str) -> str:
