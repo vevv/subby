@@ -17,7 +17,7 @@ class SDHStripper(BaseProcessor):
             for regex in extra_regexes or []
         ]
 
-    def process(self, srt):
+    def process(self, srt, language=None):
         stripped = [line for line in copy.deepcopy(srt)]
         stripped = self._clean_full_line_descriptions(stripped)
         stripped = self._clean_new_line_descriptions(stripped)

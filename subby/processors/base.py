@@ -9,21 +9,21 @@ from subby.subripfile import SubRipFile
 class BaseProcessor(ABC):
     """Base subtitle processor class"""
 
-    def from_srt(self, srt: SubRipFile) -> tuple[SubRipFile, bool]:
+    def from_srt(self, srt: SubRipFile, language: str | None = None) -> tuple[SubRipFile, bool]:
         """Processes given SubRipFile"""
-        return self.process(srt)
+        return self.process(srt, language)
 
-    def from_file(self, file: Path) -> tuple[SubRipFile, bool]:
+    def from_file(self, file: Path, language: str | None = None) -> tuple[SubRipFile, bool]:
         """Processes given srt file"""
         with file.open(mode='r', encoding='utf-8') as stream:
-            return self.from_string(stream.read())
+            return self.from_string(stream.read(), language)
 
-    def from_string(self, data: str) -> tuple[SubRipFile, bool]:
+    def from_string(self, data: str, language: str | None = None) -> tuple[SubRipFile, bool]:
         """Processes given string with srt subtitles"""
-        return self.process(SubRipFile.from_string(data))
+        return self.process(SubRipFile.from_string(data), language)
 
     @abstractmethod
-    def process(self, srt: SubRipFile) -> tuple[SubRipFile, bool]:
+    def process(self, srt: SubRipFile, language: str | None = None) -> tuple[SubRipFile, bool]:
         """
         Processes given SubRipFile
         :return: Processed SubRipFile, success (whether any changes were made)

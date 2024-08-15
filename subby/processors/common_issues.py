@@ -15,7 +15,7 @@ class CommonIssuesFixer(BaseProcessor):
 
     remove_gaps = True
 
-    def process(self, srt):
+    def process(self, srt, language=None):
         fixed = self._fix_time_codes(copy.deepcopy(srt))
         corrected = self._correct_subtitles(fixed)
         return corrected, corrected != srt
