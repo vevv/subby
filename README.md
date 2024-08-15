@@ -29,6 +29,15 @@ Only `from_string`, `clean_indexes`, `export`, `save` are guaranteed to work.
 
 This object is otherwise just a list storing `srt.Subtitle` elements.
 
+## Language specific fixing
+
+As of 0.3.6, both `CommonIssuesFixer` and `SDHStripper` support a language parameter.
+It's currently unused, but will be enable language-specific fixes in the future.
+
+**It is highly recommended for every script to pass it for future use.**
+
+CLI parameter will be added when such functionality is added.
+
 # Command line usage
 ```
 Usage: subby [OPTIONS] COMMAND [ARGS]...
