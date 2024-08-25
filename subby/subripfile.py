@@ -13,7 +13,7 @@ class SubRipFile(UserList):
 
     @classmethod
     def from_string(cls, source: str):
-        return cls(list(srt.parse(source)))
+        return cls(list(srt.parse(source, ignore_errors=True)))
 
     def clean_indexes(self):
         self.data = list(srt.sort_and_reindex(self.data))

@@ -71,7 +71,7 @@ class _SMPTEConverter:
                         line[time] = timestamp_from_ms(line[time][:-2])
                     else:
                         line[time] = self._parse_timestamp(line[time])
-            except AttributeError:
+            except (AttributeError, KeyError):
                 self.logger.warning(
                     'Could not parse %s timestamp for line %02d, skipping',
                     time, num
