@@ -37,6 +37,13 @@ def version():
 @click.argument("file", type=Path)
 @click.option("-o", "--out", type=Path, default=None, help="Output path.")
 @click.option(
+    "-l",
+    "--language",
+    type=str,
+    default=None,
+    help="Subtitle language (used for language specific processing)"
+)
+@click.option(
     "-e",
     "--encoding",
     type=str,
@@ -56,7 +63,14 @@ def version():
     is_flag=True,
     help="Keep short gaps between lines (< 85 ms; only with post-processing enabled)"
 )
-def convert(file: Path, out: Path | None, encoding: str, no_post_processing: bool, keep_short_gaps: bool):
+def convert(
+    file: Path,
+    out: Path | None,
+    language: str,
+    encoding: str,
+    no_post_processing: bool,
+    keep_short_gaps: bool
+):
     """Convert a Subtitle to SubRip (SRT)."""
     if not isinstance(file, Path):
         raise click.ClickException(f"Expected file to be a {Path} not {file!r}")
@@ -101,7 +115,7 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
     if not no_post_processing:
         processor = CommonIssuesFixer()
         processor.remove_gaps = not keep_short_gaps
-        srt, status = processor.from_srt(srt)
+        srt, status = processor.from_srt(srt, language=language)
         log.info(f"Processed subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
 
     srt.save(out, encoding=encoding)
@@ -112,6 +126,13 @@ def convert(file: Path, out: Path | None, encoding: str, no_post_processing: boo
 @main.group()
 @click.argument("file", type=Path)
 @click.option("-o", "--out", type=Path, default=None, help="Output path.")
+@click.option(
+    "-l",
+    "--language",
+    type=str,
+    default=None,
+    help="Subtitle language (used for language specific processing)"
+)
 @click.option(
     "-e",
     "--encoding",
@@ -153,7 +174,7 @@ def mend(ctx: click.Context):
 
     processor = CommonIssuesFixer()
     processor.remove_gaps = not ctx.parent.params["keep_short_gaps"]
-    processed_srt, status = processor.from_file(file)
+    processed_srt, status = processor.from_file(file, language=ctx.parent.params["language"])
     log.info(f"Processed subtitle {['but no issues were found...', 'and repaired some issues!'][status]}")
 
     return processed_srt, status
@@ -171,13 +192,13 @@ def strip_sdh(ctx: click.Context):
     log = logging.getLogger("process.strip_sdh")
 
     processor = SDHStripper()
-    processed_srt, status = processor.from_file(file)
+    processed_srt, status = processor.from_file(file, language=ctx.parent.params["language"])
     log.info(f"Processed subtitle {['but no SDH descriptions were found...', 'and removed SDH!'][status]}")
 
     if not ctx.parent.params["no_post_processing"]:
         processor = CommonIssuesFixer()
         processor.remove_gaps = not ctx.parent.params["keep_short_gaps"]
-        processed_srt, _ = processor.from_srt(processed_srt)
+        processed_srt, _ = processor.from_srt(processed_srt, language=ctx.parent.params["language"])
         log.info(
             "Processed stripped subtitle "
             + ['but no issues were found...', 'and repaired some issues!'][status]

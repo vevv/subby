@@ -38,8 +38,6 @@ This is currently used only for RTL tagging in CommonIssuesFixer.
 
 **It is highly recommended for every script to pass it for future use.**
 
-CLI parameter will be added when such functionality is added.
-
 # Command line usage
 ```
 Usage: subby [OPTIONS] COMMAND [ARGS]...
