@@ -78,7 +78,7 @@ ELIPSES_FIXING_EXAMPLE = '''1
 
 2
 00:14:00,000 --> 00:14:01,000
-Stop this.................'''
+<i>Stop this.................</i>'''
 
 
 TAG_CORRECTIONS_EXAMPLE = '''1
@@ -166,7 +166,7 @@ def test_elipses_fixing():
     fixer = CommonIssuesFixer()
     srt, _ = fixer.from_string(ELIPSES_FIXING_EXAMPLE)
     assert srt[0].content == "...noooooooooooooo..."
-    assert srt[1].content == "Stop this..."
+    assert srt[1].content == "<i>Stop this...</i>"
 
 
 # Test tag corrections

@@ -134,7 +134,7 @@ class CommonIssuesFixer(BaseProcessor):
                 r'\1...',
                 line, flags=re.M
             )
-            line = re.sub(r'\.{2,}\s*$', r'...', line, flags=re.M)
+            line = re.sub(r'\.{2,}' rf'({Regex.TAGS})?' r'\s*$', r'...\1', line, flags=re.M)
             # Change "-line" to "- line"
             line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[\w\[\(\<\{\.\$♪])", r'\1- ', line, flags=re.M)
             # Remove unnecessary space before "--"
