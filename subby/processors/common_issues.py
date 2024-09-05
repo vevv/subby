@@ -4,6 +4,8 @@ import html
 import re
 import unicodedata
 
+import langcodes
+
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
 from subby.processors.rtl import RTLFixer, RTL_LANGUAGES
@@ -20,7 +22,7 @@ class CommonIssuesFixer(BaseProcessor):
         fixed = self._fix_time_codes(copy.deepcopy(srt))
         corrected = self._correct_subtitles(fixed)
 
-        if language in RTL_LANGUAGES:
+        if language and langcodes.get(language).language in RTL_LANGUAGES:
             corrected, _ = RTLFixer().process(corrected, language=language)
 
         return corrected, corrected != srt
