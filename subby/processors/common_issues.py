@@ -6,6 +6,7 @@ import unicodedata
 
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
+from subby.processors.rtl import RTLFixer, RTL_LANGUAGES
 from subby.subripfile import SubRipFile
 from subby.utils.time import line_duration
 
@@ -18,6 +19,10 @@ class CommonIssuesFixer(BaseProcessor):
     def process(self, srt, language=None):
         fixed = self._fix_time_codes(copy.deepcopy(srt))
         corrected = self._correct_subtitles(fixed)
+
+        if language in RTL_LANGUAGES:
+            corrected, _ = RTLFixer().process(corrected, language=language)
+
         return corrected, corrected != srt
 
     def _correct_subtitles(self, srt: SubRipFile) -> SubRipFile:

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "subby"
-version = "0.3.8"
+version = "0.3.9"
 description = "Advanced subtitle converter and processor"
 authors = ["vevv"]
 license = "GPL-3.0-or-later"
