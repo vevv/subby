@@ -1,6 +1,6 @@
 TAGS = r'[<{][/\\]?[a-z0-9.]+[}>]'
 POSITION_TAGS = r'^{\\an[0-9]}'
-FRONT_OPTIONAL_TAGS_WITH_HYPHEN = rf'^\s*({TAGS})?\s*(-)?\s*({TAGS})?'
+FRONT_OPTIONAL_TAGS_WITH_HYPHEN = rf'^\s*({TAGS})?\s*(-)?\s*({TAGS})?\s*'
 TIME_LOOKAHEAD = r'(?![0-9]{2})'
 
 SPEAKER = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(Mc[A-Z][a-zA-Z]+|[A-Z0-9\&\[\]\.#\' ]+\s*|[A-Z][a-z]+):{TIME_LOOKAHEAD} ?'

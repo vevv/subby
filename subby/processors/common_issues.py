@@ -160,6 +160,10 @@ class CommonIssuesFixer(BaseProcessor):
             # Remove linebreaks inside lines
             line = re.sub(r'\r\n{1,}', r'\r\n', line).strip()
             line = re.sub(r'\n{1,}', r'\n', line).strip()
+            # Remove duplicate spaces around italics
+            line = re.sub(r' +</i> +', r'</i> ', line).strip()
+            # Remove italics from hyphen, when content immediately following is not italics
+            line = re.sub(r'<i>-</i>([^<]+)', r'-\1', line).strip()
 
             return line
 
