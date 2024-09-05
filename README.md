@@ -31,7 +31,9 @@ This object is otherwise just a list storing `srt.Subtitle` elements.
 
 ## Language specific fixing
 
-As of 0.3.6, both `CommonIssuesFixer` and `SDHStripper` support a language parameter.
+As of 0.3.6, both `CommonIssuesFixer` and `SDHStripper` support a language parameter,
+which accepts a BCP47 language code.
+
 It's currently unused, but will be enable language-specific fixes in the future.
 
 **It is highly recommended for every script to pass it for future use.**
