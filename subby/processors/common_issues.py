@@ -58,6 +58,7 @@ class CommonIssuesFixer(BaseProcessor):
                 line,
                 flags=re.M
             )
+            line = re.sub(r'^[#\*]+$', r'♪', line, flags=re.M)
             # Move notes into italics, if rest of the line is
             line = re.sub(r'♪ <i>(.*)', r'<i>♪ \1', line)
             line = re.sub(r'(♪.*)</i>\s*♪', r'\1 ♪</i>', line)
