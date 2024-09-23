@@ -3,12 +3,13 @@ import datetime
 import html
 import re
 import unicodedata
+from datetime import timedelta
 
 import langcodes
 
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
-from subby.processors.rtl import RTLFixer, RTL_LANGUAGES
+from subby.processors.rtl import RTL_LANGUAGES, RTLFixer
 from subby.subripfile import SubRipFile
 from subby.utils.time import line_duration
 
@@ -241,6 +242,7 @@ class CommonIssuesFixer(BaseProcessor):
             # Remove 2-frame or smaller gaps (2 frames/83ms@24 is Netflix standard)
             elif 0 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85:
                 line.start = subs_copy[-1].end
+                subs_copy[-1].end -= timedelta(milliseconds=1)
                 subs_copy.append(line)
             elif line.content.strip():
                 subs_copy.append(line)

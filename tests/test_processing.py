@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import time, timedelta
 
 from subby import CommonIssuesFixer
 
@@ -183,7 +183,8 @@ def test_tag_corrections():
 def test_gap_removal():
     fixer = CommonIssuesFixer()
     srt, _ = fixer.from_string(GAP_REMOVAL_EXAMPLE)
-    assert srt[0].end == srt[1].start == timedelta(minutes=19, milliseconds=100)
+    assert srt[0].end == timedelta(minutes=19, milliseconds=99)
+    assert srt[1].start == timedelta(minutes=19, milliseconds=100)
 
     fixer.remove_gaps = False
     srt2, _ = fixer.from_string(GAP_REMOVAL_EXAMPLE)
