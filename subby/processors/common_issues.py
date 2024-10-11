@@ -47,7 +47,7 @@ class CommonIssuesFixer(BaseProcessor):
             line = line.replace(r'‐', r'-')
             # Replace hashes, asterisks at the start of a line with a musical note
             line = re.sub(
-                r'^((?:{\\an8})?(?:<i>)?)(-)?[#\*]{1,}(?=\s+)',
+                r'^((?:{\\an8})?(?:<i>)?)(- ?)?[#\*]{1,}(?=\s+)',
                 r'\1\2♪',
                 line,
                 flags=re.M
@@ -144,8 +144,8 @@ class CommonIssuesFixer(BaseProcessor):
                 line, flags=re.M
             )
             line = re.sub(r'\.{2,}' rf'({Regex.TAGS})?' r'\s*$', r'...\1', line, flags=re.M)
-            # Change "-line" to "- line"
-            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[\w\[\(\<\{\.\$♪])", r'\1- ', line, flags=re.M)
+            # Add space after frontal speaker hyphen
+            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[\w\"\[\(\<\{\.\$♪])", r'\1- ', line, flags=re.M)
             # Remove unnecessary space before "--"
             line = re.sub(r'\s*--(\s*)', r'--\1', line, flags=re.M)
             # Move notes inside tags (</i> ♪ -> </i>)
