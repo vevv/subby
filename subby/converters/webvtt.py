@@ -16,7 +16,7 @@ HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
 STYLE_TAG_OPEN = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)')
 STYLE_TAG = re.compile(r'<c.([a-zA-Z0-9]+)>([^<]+)<\/c>')
 STYLE_TAG_CLOSE = re.compile(r'<\/c>$')
-SKIP_WORDS = ('WEBVTT', 'NOTE', '/*')
+SKIP_WORDS = ('WEBVTT', 'NOTE', '/*', 'X-TIMESTAMP-MAP')
 
 
 class WebVTTConverter(BaseConverter):
