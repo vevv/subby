@@ -56,7 +56,7 @@ Commands:
 
 Example
 ```
-subby process /path/to/subs.srt strip-sdh
+subby process -o /path/to/striped_subs.srt /path/to/subs.srt strip-sdh
 ```
 
 
