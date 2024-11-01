@@ -53,7 +53,11 @@ Commands:
   process  SubRip (SRT) post-processing.
   version  Print version information.
 ```
+Example
 
+```
+subby process /path/to/subs/subs.srt strip-sdh 
+```
 
 # Library usage
 ## Converter
