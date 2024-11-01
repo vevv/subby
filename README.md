@@ -54,6 +54,11 @@ Commands:
   version  Print version information.
 ```
 
+Example
+```
+subby process /path/to/subs.srt strip-sdh
+```
+
 
 # Library usage
 ## Converter
