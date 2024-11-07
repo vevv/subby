@@ -55,7 +55,11 @@ ABCD FM
 
 13
 00:13:00,000 --> 00:13:01,000
-* Schnaub *'''
+* Schnaub *
+
+14
+00:14:00,000 --> 00:14:01,000
+♫ Thunder'''
 
 
 ADDING_LINE_BREAKS_EXAMPLE = '''1
@@ -150,6 +154,7 @@ def test_musical_notes():
     assert srt[10].content == '<i>♪ Fire ♪</i>'
     assert srt[11].content == '*Schnaub*'
     assert srt[12].content == '♪ Schnaub ♪'
+    assert srt[13].content == '♪ Thunder'
 
 
 # Test adding missing line breaks

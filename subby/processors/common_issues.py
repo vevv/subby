@@ -45,6 +45,8 @@ class CommonIssuesFixer(BaseProcessor):
             line = unicodedata.normalize('NFKC', line)
             # Replace short hyphen with regular size
             line = line.replace(r'‐', r'-')
+            # Replace double note with single note
+            line = line.replace(r'♫', r'♪')
             # Replace hashes, asterisks at the start of a line with a musical note
             line = re.sub(
                 r'^((?:{\\an8})?(?:<i>)?)(- ?)?[#\*]{1,}(?=\s+)',
