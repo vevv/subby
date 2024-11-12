@@ -17,6 +17,7 @@ STYLE_TAG_OPEN = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)')
 STYLE_TAG = re.compile(r'<c.([a-zA-Z0-9]+)>([^<]+)<\/c>')
 STYLE_TAG_CLOSE = re.compile(r'<\/c>$')
 SKIP_WORDS = ('WEBVTT', 'NOTE', '/*', 'X-TIMESTAMP-MAP')
+SPEAKER_TAG = re.compile(r'<v\s+[^>]+>')  # Matches opening <v Name> tags, closing tags handled by STYLE_TAG_CLOSE
 
 
 class WebVTTConverter(BaseConverter):
@@ -102,6 +103,9 @@ class WebVTTConverter(BaseConverter):
             elif looking_for_text:
                 # Unescape html entities
                 line = html.unescape(line)
+
+                # Remove speaker tags here
+                line = re.sub(SPEAKER_TAG, '', line)
 
                 # Set \an8 tag if position is below 25
                 # (value taken from SubtitleEdit)
