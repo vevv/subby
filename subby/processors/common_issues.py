@@ -81,7 +81,7 @@ class CommonIssuesFixer(BaseProcessor):
             # Fix leftover amps (html unescape fixes those, but not when they're duped)
             line = re.sub(r'&(amp;){1,}', r'&', line)
             # Fix "it'`s" -> "it's"
-            line = re.sub(r"'`", r"'", line)
+            line = re.sub(r"'[`’]", r"'", line)
 
             # [TAG STRIPPING AND CORRECTING]
             #
