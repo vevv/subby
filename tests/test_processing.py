@@ -236,6 +236,12 @@ def test_fix_overlapping_time():
     assert srt[0].end == timedelta(milliseconds=104)
     assert srt[1].start == timedelta(milliseconds=105)
 
+    fixer.remove_gaps = False
+    srt, _ = fixer.from_string(OVERLAPPING_TIME_EXAMPLE)
+    assert srt[0].end == timedelta(milliseconds=104)
+    assert srt[1].start == timedelta(milliseconds=105)
+
+
 
 if __name__ == "__main__":
     test_musical_notes()

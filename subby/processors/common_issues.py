@@ -227,6 +227,10 @@ class CommonIssuesFixer(BaseProcessor):
                     and self.remove_gaps:
                 subs_copy[-1].end = line.end
                 subs_copy[-1].content = line.content
+            # Fix overlapping times
+            elif self._subtract_ts(line.start, subs_copy[-1].end) == 0:
+                subs_copy[-1].end -= timedelta(milliseconds=1)
+                subs_copy.append(line)
             elif line.content.strip():
                 subs_copy.append(line)
 
@@ -242,7 +246,7 @@ class CommonIssuesFixer(BaseProcessor):
                 subs_copy.append(line)
                 continue
             # Remove 2-frame or smaller gaps (2 frames/83ms@24 is Netflix standard)
-            elif 0 <= self._subtract_ts(line.start, subs_copy[-1].end) <= 85:
+            elif 1 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85:
                 line.start = subs_copy[-1].end
                 subs_copy[-1].end -= timedelta(milliseconds=1)
                 subs_copy.append(line)
