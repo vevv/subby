@@ -123,6 +123,7 @@ Synthetic test.</i> <i>
 Definitely not real.</i>
 '''
 
+
 SPACES_AFTER_HYPHENS_EXAMPLE = '''1
 00:23:00,000 --> 00:23:01,000
 -Well.
@@ -135,6 +136,15 @@ Always. Run. Tests.
 2
 28:27:00,000 --> 28:27:01,000
 Really.'''
+
+
+OVERLAPPING_TIME_EXAMPLE = '''1
+00:00:00,000 --> 00:00:00,105
+this line should end at 104
+
+2
+00:00:00,105 --> 00:00:01,000
+and that line should end start at 105'''
 
 
 def test_musical_notes():
@@ -219,6 +229,14 @@ def test_invalid_timestamp_fixing():
     assert srt[1].start == timedelta(hours=1, minutes=27)
 
 
+# Test overlapping time fixing
+def test_fix_overlapping_time():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(OVERLAPPING_TIME_EXAMPLE)
+    assert srt[0].end == timedelta(milliseconds=104)
+    assert srt[1].start == timedelta(milliseconds=105)
+
+
 if __name__ == "__main__":
     test_musical_notes()
     test_adding_line_breaks()
@@ -228,3 +246,4 @@ if __name__ == "__main__":
     test_redundant_space_removal()
     test_adding_spaces_after_frontal_hyphens()
     test_invalid_timestamp_fixing()
+    test_fix_overlapping_time()
