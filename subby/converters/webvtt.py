@@ -146,7 +146,7 @@ class WebVTTConverter(BaseConverter):
 
         position = None
         for key, val in (pos.split(':') for pos in cue_settings):
-            if key == 'line' and (val := val.split(',')[0])[-1] == '%':
+            if key == 'line' and val and (val := val.split(',')[0])[-1] == '%':
                 position = float(val[:-1])
                 break
 
