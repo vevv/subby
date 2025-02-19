@@ -149,6 +149,9 @@ class WebVTTConverter(BaseConverter):
             if key == 'line' and val and (val := val.split(',')[0])[-1] == '%':
                 position = float(val[:-1])
                 break
+            elif key == 'line' and val and val == '0':
+                position = 0
+                break
 
         return position
 
