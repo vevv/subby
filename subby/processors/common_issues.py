@@ -147,7 +147,7 @@ class CommonIssuesFixer(BaseProcessor):
             )
             line = re.sub(r'\.{2,}' rf'({Regex.TAGS})?' r'\s*$', r'...\1', line, flags=re.M)
             # Add space after frontal speaker hyphen
-            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[\w\"\[\(\<\{\.\$♪¿])", r'\1- ', line, flags=re.M)
+            line = re.sub(r"^(<i>|\{\\an8\})?-+(?='?[\w\"\[\(\<\{\.\$♪¿¡])", r'\1- ', line, flags=re.M)
             # Remove unnecessary space before "--"
             line = re.sub(r'\s*--(\s*)', r'--\1', line, flags=re.M)
             # Move notes inside tags (</i> ♪ -> </i>)
