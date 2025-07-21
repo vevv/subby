@@ -122,10 +122,6 @@ class CommonIssuesFixer(BaseProcessor):
             #
             # Remove spaces inside brackets ("( TEXT )" -> "(TEXT)")
             line = re.sub(r'\( (.*) \)', r'(\1)', line)
-            # Remove ">> " before text
-            line = re.sub(r'(^|\n)(</?[a-z]>|\{\\an8\})?>> ', r'\1\2', line)
-            # Remove lines consisting only of ">>"
-            line = re.sub(r'(^|\n)(</?[a-z]>|\{\\an8\})?>>($|\n)', r'', line)
             # Replace any leftover <br> tags with a proper line break
             line = re.sub(r'<br ?\/?>', '\n', line)
             # Remove empty lines

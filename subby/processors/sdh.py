@@ -23,6 +23,7 @@ class SDHStripper(BaseProcessor):
         stripped = self._clean_new_line_descriptions(stripped)
         stripped = self._clean_inline_descriptions(stripped)
         stripped = self._clean_speaker_names(stripped)
+        stripped = self._strip_cc_speaker_tags(stripped)
         stripped = self._strip_notes(stripped)
         stripped = self._remove_extra_hyphens(stripped)
         stripped = self._run_extra_regexes(stripped)
@@ -77,6 +78,16 @@ class SDHStripper(BaseProcessor):
             # Retain frontal tags/hyphens
             for regex in (Regex.SPEAKER_PARENTHESES, Regex.SPEAKER):
                 line.content = re.sub(regex, r'\2\3', line.content, flags=re.M).strip()
+            yield line
+
+    def _strip_cc_speaker_tags(self, srt):
+        """Removes US closed caption-style speaker tags (>>)"""
+        for line in srt:
+            # Remove ">> " before text
+            line.content = re.sub(r'(^|\n)(</?[a-z]>|\{\\an8\})?>> ', r'\1\2', line.content)
+            # Remove lines consisting only of ">>"
+            if re.match(r'(^|\n)(</?[a-z]>|\{\\an8\})?>>($|\n)', line.content):
+                continue
             yield line
 
     def _strip_notes(self, srt):

@@ -45,14 +45,23 @@ It's zoo time!
 10
 00:01:41,685 --> 00:01:42,769
 - Boo!
-- STUDENT: No, thanks.'''
+- STUDENT: No, thanks.
+
+11
+00:01:43,685 --> 00:01:44,769
+>> SO THIS IS MY HOME OFFICE
+HERE. IN THIS OFFICE ARE A LOT
+
+12
+00:01:45,685 --> 00:01:46,769
+>>'''
 
 
 def test_sdh_stripping():
     stripper = SDHStripper()
     fixer = CommonIssuesFixer()  # Fixer is currently necessary to fix some of the issues from stripping
     srt, _ = fixer.from_srt(stripper.from_string(EXAMPLE_1)[0])
-    assert len(srt) == 7
+    assert len(srt) == 8
     assert srt[0].content == '<i>"W" who?</i>'
     assert srt[1].content == '- ♪ Hey, boo ♪\n- ♪ Hey, boo ♪'
     assert srt[2].content == "It's zoo time!"
@@ -60,6 +69,7 @@ def test_sdh_stripping():
     assert srt[4].content == 'Hmm?\n<i>Hello!</i>'
     assert srt[5].content == 'I did on magnets this summer.'
     assert srt[6].content == '- Boo!\n- No, thanks.'
+    assert srt[7].content == 'SO THIS IS MY HOME OFFICE\nHERE. IN THIS OFFICE ARE A LOT'
 
 
 if __name__ == "__main__":
