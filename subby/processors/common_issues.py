@@ -17,7 +17,7 @@ from subby.utils.time import line_duration
 class CommonIssuesFixer(BaseProcessor):
     """Processor fixing common issues found in subtitles"""
 
-    remove_gaps = True
+    remove_gaps: bool = True
 
     def process(self, srt, language=None):
         fixed = self._fix_time_codes(copy.deepcopy(srt))
@@ -187,12 +187,17 @@ class CommonIssuesFixer(BaseProcessor):
             # Remove remaining linebreaks
             line.content = line.content.strip('\n')
 
-        # Remove italics if every line is italicized, as this is almost certainly a mistake
+        # Remove italics/an8 if every line has them, as this is almost certainly a mistake
         # (using slices should be more performant than regex or startswith/endswith)
         if len(srt) > 10 \
                 and all(line.content[:3] == '<i>' and line.content[-4:] == '</i>' for line in srt):
             for line in srt:
                 line.content = line.content[3:-4]
+        # Using a higher threshold for an8, as it's entirely plausible for forced subs to be all an8
+        # (all lines set to an8 to avoid hardsubs is a possible edge case, but much less likely)
+        if len(srt) > 100 and all(line.content[:6] == r'{\an8}' for line in srt):
+            for line in srt:
+                line.content = line.content[6:]
 
         combined = self._combine_timecodes(srt)
         if self.remove_gaps:
