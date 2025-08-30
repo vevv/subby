@@ -1,4 +1,3 @@
-from datetime import timedelta
 from io import BytesIO
 
 from subby import WebVTTConverter
@@ -17,3 +16,7 @@ def test_speaker_tag_stripping():
     # Verify that speaker tag is stripped
     assert len(srt) == 1
     assert srt[0].content == "- TESTY TESTERSON:\nThis is a test, if my name isn't Testy Testerson!"
+
+
+if __name__ == "__main__":
+    test_speaker_tag_stripping()

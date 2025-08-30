@@ -49,6 +49,7 @@ class _SMPTEConverter:
 
         self.italics = {}
         self.an8 = {}
+        self.ruby = {}
         self.all_span_italics = '<span tts:fontStyle="italic">' not in data
 
         self._parse_styles()
@@ -104,6 +105,8 @@ class _SMPTEConverter:
         for style in self.root.find_all('style'):
             if style.get('xml:id'):
                 self.italics[style['xml:id']] = self._is_italic(style)
+            if style.get('tts:ruby') == 'text':
+                self.ruby[style['xml:id']] = True
         for region in self.root.find_all('region'):
             if region.get('xml:id'):
                 self.an8[region['xml:id']] = self._is_an8(region)
@@ -128,6 +131,9 @@ class _SMPTEConverter:
             if self._is_an8(element) and element_text.strip():
                 element_text = '{\\an8}%s' % element_text
 
+            if self._is_ruby(element) and element_text.strip():
+                element_text = '(%s)' % element_text
+
         return element_text
 
     def _is_italic(self, element):
@@ -145,6 +151,14 @@ class _SMPTEConverter:
             return element.get('tts:displayAlign') == 'before'
         elif element.get('region'):
             return self.an8.get(element['region'])
+
+        return False
+
+    def _is_ruby(self, element):
+        if element.get('tts:ruby') == 'text':
+            return True
+        elif element.get('style'):
+            return self.ruby.get(element['style'])
 
         return False
 

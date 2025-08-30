@@ -3,7 +3,6 @@ from __future__ import annotations
 import html
 import re
 from functools import partial
-from typing import Optional
 
 import tinycss
 from srt import Subtitle
@@ -18,6 +17,8 @@ STYLE_TAG = re.compile(r'<c.([a-zA-Z0-9]+)>([^<]+)<\/c>')
 STYLE_TAG_CLOSE = re.compile(r'<\/c>$')
 SKIP_WORDS = ('WEBVTT', 'NOTE', '/*', 'X-TIMESTAMP-MAP')
 SPEAKER_TAG = re.compile(r'<v\s+[^>]+>')  # Matches opening <v Name> tags, closing tags handled by STYLE_TAG_CLOSE
+RUBY_TEXT_TAG = re.compile(r'<rt>([^<]+)<\/rt>')
+RUBY_PARENTHESIS_TAG = re.compile(r'<rp>([^<]+)<\/rp>')
 
 
 class WebVTTConverter(BaseConverter):
@@ -128,13 +129,17 @@ class WebVTTConverter(BaseConverter):
                 line.content
             )
 
+            # Add parentheses around ruby text
+            line.content = re.sub(RUBY_TEXT_TAG, r'(\1)', line.content)
+            line.content = re.sub(RUBY_PARENTHESIS_TAG, r'', line.content)
+
             # Strip non-italic tags
             line.content = re.sub(HTML_TAG, '', line.content)
 
         return srt
 
     @staticmethod
-    def _get_position(cue_settings: list[str]) -> Optional[float]:
+    def _get_position(cue_settings: list[str]) -> float | None:
         """
         Parses list of cue settings and extracts position offset as a float
         Line number based offset and alignment strings are ignored
