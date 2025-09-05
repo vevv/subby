@@ -248,8 +248,7 @@ class CommonIssuesFixer(BaseProcessor):
                 continue
             # Remove 2-frame or smaller gaps (2 frames/83ms@24 is Netflix standard)
             elif 1 < self._subtract_ts(line.start, subs_copy[-1].end) <= 85:
-                line.start = subs_copy[-1].end
-                subs_copy[-1].end -= timedelta(milliseconds=1)
+                subs_copy[-1].end = line.start - timedelta(milliseconds=1)
                 subs_copy.append(line)
             elif line.content.strip():
                 subs_copy.append(line)
