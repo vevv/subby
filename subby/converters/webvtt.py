@@ -12,8 +12,7 @@ from subby.subripfile import SubRipFile
 from subby.utils.time import timedelta_from_timestamp
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
-STYLE_TAG_OPEN = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)')
-STYLE_TAG = re.compile(r'<c.([a-zA-Z0-9]+)>([^<]+)<\/c>')
+STYLE_TAG = re.compile(r'<c(\.[^>]+)>([^<]+)<\/c>')
 STYLE_TAG_CLOSE = re.compile(r'<\/c>$')
 SKIP_WORDS = ('WEBVTT', 'NOTE', '/*', 'X-TIMESTAMP-MAP')
 SPEAKER_TAG = re.compile(r'<v\s+[^>]+>')  # Matches opening <v Name> tags, closing tags handled by STYLE_TAG_CLOSE
@@ -163,5 +162,7 @@ class WebVTTConverter(BaseConverter):
     @staticmethod
     def _replace_italics(match: re.Match, styles: dict[str, dict[str, str]]) -> str:
         if (s := styles.get(match[1])) and s.get('font-style') == 'italic':
+            return f'<i>{match[2]}</i>'
+        if match[1] and 'font-style_italic' in match[1].split('.'):
             return f'<i>{match[2]}</i>'
         return match[0]

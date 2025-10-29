@@ -147,6 +147,15 @@ this line should end at 104
 and that line should end start at 105'''
 
 
+DUPE_ALIGNMENT_EXAMPLE = '''1
+00:02:05.289 --> 00:02:07.416
+{\\an8}I'm only nineteen
+
+2
+00:02:05.289 --> 00:02:07.416
+{\\an8}but my mind is old'''
+
+
 def test_musical_notes():
     fixer = CommonIssuesFixer()
     srt, _ = fixer.from_string(MUSICAL_NOTE_EXAMPLE)
@@ -242,6 +251,12 @@ def test_fix_overlapping_time():
     assert srt[1].start == timedelta(milliseconds=105)
 
 
+# Test duplicate ASS alignment tags
+def test_dupe_alignment_tags():
+    fixer = CommonIssuesFixer()
+    srt, _ = fixer.from_string(DUPE_ALIGNMENT_EXAMPLE)
+    assert srt[0].content == "{\\an8}I'm only nineteen\nbut my mind is old"
+
 
 if __name__ == "__main__":
     test_musical_notes()
@@ -253,3 +268,4 @@ if __name__ == "__main__":
     test_adding_spaces_after_frontal_hyphens()
     test_invalid_timestamp_fixing()
     test_fix_overlapping_time()
+    test_dupe_alignment_tags()
