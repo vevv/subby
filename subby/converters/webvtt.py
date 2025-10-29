@@ -12,8 +12,8 @@ from subby.subripfile import SubRipFile
 from subby.utils.time import timedelta_from_timestamp
 
 HTML_TAG = re.compile(r'</?(?!/?i)[^>\s]+>')
-STYLE_TAG_OPEN = re.compile(r'^<c.([A-Za-z0-9_-]+)>(.*)', re.DOTALL)
-STYLE_TAG = re.compile(r'<c.([A-Za-z0-9_-]+)>(.*?)<\/c>', re.DOTALL)
+STYLE_TAG_OPEN = re.compile(r'^<c.([a-zA-Z0-9]+)>([^<]+)')
+STYLE_TAG = re.compile(r'<c.([a-zA-Z0-9]+)>([^<]+)<\/c>')
 STYLE_TAG_CLOSE = re.compile(r'<\/c>$')
 SKIP_WORDS = ('WEBVTT', 'NOTE', '/*', 'X-TIMESTAMP-MAP')
 SPEAKER_TAG = re.compile(r'<v\s+[^>]+>')  # Matches opening <v Name> tags, closing tags handled by STYLE_TAG_CLOSE
@@ -119,32 +119,23 @@ class WebVTTConverter(BaseConverter):
         # Add any leftover text to the last line
         if text:
             srt[-1].content += '\n'.join(text)
-        
-        # Keep track of the previous line to check for dupe alignment tags
-        previous = None
+
         for line in srt:
-            # If current line and previous line have an alignment tag
-            # and they share identical start/end times → remove redundant {\an8}
-            if (
-                previous
-                and '{\\an8}' in line.content
-                and '{\\an8}' in previous.content
-                and line.start == previous.start
-                and line.end == previous.end
-            ):
-                line.content = line.content.replace('{\\an8}', '', 1)
+            # Replace styles with italics tag when appropriate
+            # (replace instead of match, to handle nested)
+            line.content = re.sub(
+                STYLE_TAG,
+                partial(self._replace_italics, styles=styles),
+                line.content
+            )
 
             # Add parentheses around ruby text
             line.content = re.sub(RUBY_TEXT_TAG, r'(\1)', line.content)
             line.content = re.sub(RUBY_PARENTHESIS_TAG, r'', line.content)
 
             # Strip non-italic tags
-            # Replace italic style tags with <i></i>
-            # even for nested or partial tags
-            line.content = _replace_italics(line)
-            
             line.content = re.sub(HTML_TAG, '', line.content)
-            previous = line
+
         return srt
 
     @staticmethod
@@ -170,13 +161,7 @@ class WebVTTConverter(BaseConverter):
         return position
 
     @staticmethod
-    def _replace_italics(line) -> str:
-        line_content = line.content
-        line_content = re.sub(
-            r'<c[^>]*italic[^>]*>(.*?)</c>',
-            r'<i>\1</i>',
-            line_content,
-            flags=re.IGNORECASE | re.DOTALL
-        )
-
-        return line_content
+    def _replace_italics(match: re.Match, styles: dict[str, dict[str, str]]) -> str:
+        if (s := styles.get(match[1])) and s.get('font-style') == 'italic':
+            return f'<i>{match[2]}</i>'
+        return match[0]
