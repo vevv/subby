@@ -104,8 +104,9 @@ class WVTTConverter(BaseConverter):
                         start_ms = new_start
                         new_start = None
 
-                    vtt_lines.append((f'{timestamp_from_ms(start_ms)} --> '
-                                      f'{timestamp_from_ms(end_ms)} '
-                                      f'{settings}\n{cue_text}\n\n'))
+                    if cue_text is not None:
+                        vtt_lines.append((f'{timestamp_from_ms(start_ms)} --> '
+                                          f'{timestamp_from_ms(end_ms)} '
+                                          f'{settings}\n{cue_text}\n\n'))
 
         return WebVTTConverter().from_string(''.join(vtt_lines))
