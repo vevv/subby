@@ -161,8 +161,8 @@ class WebVTTConverter(BaseConverter):
 
     @staticmethod
     def _replace_italics(match: re.Match, styles: dict[str, dict[str, str]]) -> str:
-        if (s := styles.get(match[1])) and s.get('font-style') == 'italic':
-            return f'<i>{match[2]}</i>'
-        if match[1] and 'font-style_italic' in match[1].split('.'):
-            return f'<i>{match[2]}</i>'
+        for sn in match[1].split('.'):
+            if ((s := styles.get(sn)) and s.get('font-style') == 'italic') \
+                    or sn == 'font-style_italic':  # out of spec hack
+                return f'<i>{match[2]}</i>'
         return match[0]
