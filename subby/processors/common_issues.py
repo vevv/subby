@@ -36,7 +36,7 @@ class CommonIssuesFixer(BaseProcessor):
     def _normalize_unicode(self, srt: SubRipFile) -> SubRipFile:
         """Normalizes Unicode characters"""
         for line in srt:
-            line = unicodedata.normalize('NFKC', line)
+            line.content = unicodedata.normalize('NFKC', line.content)
         return srt
 
     def _correct_subtitles(self, srt: SubRipFile) -> SubRipFile:
