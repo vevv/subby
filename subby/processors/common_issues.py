@@ -29,7 +29,7 @@ class CommonIssuesFixer(BaseProcessor):
             corrected, _ = RTLFixer().process(corrected, language=language)
 
         if lang_code == 'en':
-            corrected = self._normalize_unicode(srt)
+            corrected = self._normalize_unicode(corrected)
 
         return corrected, corrected != srt
 
