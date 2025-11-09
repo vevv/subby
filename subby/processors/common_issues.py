@@ -20,13 +20,23 @@ class CommonIssuesFixer(BaseProcessor):
     remove_gaps: bool = True
 
     def process(self, srt, language=None):
+        lang_code = langcodes.get(language).language if language else None
         fixed = self._fix_time_codes(copy.deepcopy(srt))
         corrected = self._correct_subtitles(fixed)
 
-        if language and langcodes.get(language).language in RTL_LANGUAGES:
+        if lang_code in RTL_LANGUAGES:
             corrected, _ = RTLFixer().process(corrected, language=language)
 
+        if lang_code == 'en':
+            corrected = self._normalize_unicode(srt)
+
         return corrected, corrected != srt
+
+    def _normalize_unicode(self, srt: SubRipFile) -> SubRipFile:
+        """Normalizes Unicode characters"""
+        for line in srt:
+            line = unicodedata.normalize('NFKC', line)
+        return srt
 
     def _correct_subtitles(self, srt: SubRipFile) -> SubRipFile:
         def _fix_line(line):
@@ -41,8 +51,6 @@ class CommonIssuesFixer(BaseProcessor):
             # Fix musical notes garbled by encoding
             # has to happen before normalization as that replaces the TM char
             line = line.replace(r'â™ª', '♪')
-            # Normalize unicode characters
-            line = unicodedata.normalize('NFKC', line)
             # Replace short hyphen with regular size
             line = line.replace(r'‐', r'-')
             # Replace double note with single note
