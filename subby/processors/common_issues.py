@@ -6,6 +6,7 @@ import unicodedata
 from datetime import timedelta
 
 import langcodes
+from ftfy import fix_encoding
 
 from subby import regex as Regex
 from subby.processors.base import BaseProcessor
@@ -48,9 +49,9 @@ class CommonIssuesFixer(BaseProcessor):
             line = re.sub(r'\n\s*', '\n', line)
             #
             # [ENCODING FIXES, CHARACTER REPLACEMENTS]
-            # Fix musical notes garbled by encoding
-            # has to happen before normalization as that replaces the TM char
-            line = line.replace(r'â™ª', '♪')
+            # Fix various encoding issues in the source using ftfy
+            # e.g. â™ª -> ♪, protÃ©gÃ© -> protégé
+            line = fix_encoding(line)
             # Replace short hyphen with regular size
             line = line.replace(r'‐', r'-')
             # Replace double note with single note

@@ -1,6 +1,6 @@
 [project]
 name = "subby"
-version = "0.3.24"
+version = "0.3.25"
 description = "Advanced subtitle converter and processor"
 authors = [{name = "vevv"}]
 license = "GPL-3.0-or-later"
@@ -16,6 +16,7 @@ dependencies = [
     "srt (>=3.5.3)",
     "lxml (>=5.3.0,>=6.0.0)",
     "langcodes (>=3.4.0)",
+    "ftfy (>=6.3.1,<7.0.0)",
 ]
 
 [tool.poetry.group.dev]
