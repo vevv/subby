@@ -34,7 +34,7 @@ This object is otherwise just a list storing `srt.Subtitle` elements.
 As of 0.3.6, both `CommonIssuesFixer` and `SDHStripper` support a language parameter,
 which accepts a BCP47 language code.
 
-This is currently used only for RTL tagging in CommonIssuesFixer.
+This is currently used only in CommonIssuesFixer, to enable correct alignment of text in right-to-left languages, and to enable unicode normalization on English subtitles only.
 
 **It is highly recommended for every script to pass it for future use.**
 
