@@ -1,6 +1,6 @@
 [project]
 name = "subby"
-version = "0.3.25"
+version = "0.3.26"
 description = "Advanced subtitle converter and processor"
 authors = [{name = "vevv"}]
 license = "GPL-3.0-or-later"
