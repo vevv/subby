@@ -225,7 +225,7 @@ class CommonIssuesFixer(BaseProcessor):
                     and subs_copy[-1].start == line.start \
                     and subs_copy[-1].end == line.end:
                 if subs_copy[-1].content != line.content:
-                    subs_copy[-1].content += '\n' + line.content.strip('{\\an8}')
+                    subs_copy[-1].content += '\n' + line.content.replace('{\\an8}', '')
             # Merge lines with the same text within 10 ms
             elif self._subtract_ts(line.start, subs_copy[-1].end) < 10 \
                     and line.content == subs_copy[-1].content:
