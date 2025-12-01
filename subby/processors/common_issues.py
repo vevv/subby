@@ -52,6 +52,10 @@ class CommonIssuesFixer(BaseProcessor):
             # Fix various encoding issues in the source using ftfy
             # e.g. â™ª -> ♪, protÃ©gÃ© -> protégé
             line = fix_encoding(line)
+            # Replace paragraph start (pilcrow) with a musical note
+            # (This is extremely unlikely to occur in any other context
+            # and there are samples with this in the wild)
+            line = line.replace(r'¶', r'♪')
             # Replace short hyphen with regular size
             line = line.replace(r'‐', r'-')
             # Replace double note with single note
