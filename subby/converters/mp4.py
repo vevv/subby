@@ -11,8 +11,9 @@ from subby.utils.time import timestamp_from_ms
 
 from abc import ABC, abstractmethod
 
+
 class BaseSegmentedConverter(BaseConverter, ABC):
-    """Segmented streams base converter"""
+    """Segmented stream base converter"""
 
     def parse(self, stream):
         ftyp_box_header = b"\x00\x00\x00\x1cftyp"
@@ -42,8 +43,9 @@ class BaseSegmentedConverter(BaseConverter, ABC):
         return self._parse(segments)
 
     @abstractmethod
-    def _parse(self, segments):
-        pass
+    def _parse(self, segments) -> SubRipFile:
+        ...
+
 
 class ISMTConverter(BaseSegmentedConverter):
     """ISMT (DFXP in MP4) subtitle converter"""
@@ -64,6 +66,7 @@ class ISMTConverter(BaseSegmentedConverter):
                     srt.extend(new)
 
         return srt
+
 
 class WVTTConverter(BaseSegmentedConverter):
     """WVTT (WebVTT in MP4) subtitle converter"""
