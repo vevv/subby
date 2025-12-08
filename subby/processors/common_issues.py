@@ -130,6 +130,10 @@ class CommonIssuesFixer(BaseProcessor):
             line = re.sub(r'<[a-z]>\s*</[a-z]>', r'', line)
             # Move "{\an8}" to the rest of the text if it's on a new line
             line = re.sub(r'({\\an8\})\n', r'\1', line)
+            # Add closing italics tag if the line lacks one
+            if (m := re.search(r'^(?:{\\an8\})?<([a-z])>', line)) \
+                    and (end := f'</{m[1]}>') not in line:
+                line += end
 
             # [REFORMATTING]
             #
