@@ -18,6 +18,13 @@ class SubRipFile(UserList):
     def clean_indexes(self):
         self.data = list(srt.sort_and_reindex(self.data))
 
+    def sort(self, *args, **kwargs):
+        super().sort(*args, **kwargs)
+
+        # Fix index after sorting, so that the sort doesn't get overwritten later
+        for i, line in enumerate(self.data, 1):
+            line.index = i
+
     def offset(self, offset: timedelta):
         for line in self.data:
             line.start += offset

@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import re
 from functools import partial
+from operator import attrgetter
 
 import tinycss
 from srt import Subtitle
@@ -94,7 +95,8 @@ class WebVTTConverter(BaseConverter):
                     index=line_number,
                     start=timedelta_from_timestamp(start),
                     end=timedelta_from_timestamp(end),
-                    content=''
+                    content='',
+                    proprietary=position  # misuse this field to temporarily hold pos  # pyright: ignore[reportArgumentType]
                 ))
                 looking_for_text = True
                 line_number += 1
@@ -119,7 +121,13 @@ class WebVTTConverter(BaseConverter):
         if text:
             srt[-1].content += '\n'.join(text)
 
+        # Sort lines with identical timecodes by position
+        # Some subtitles have them in an incorrect order, but display correctly due to positioning
+        srt.sort(key=attrgetter('start', 'end', 'proprietary'))
+
         for line in srt:
+            line.proprietary = ''  # remove misused field
+
             # Replace styles with italics tag when appropriate
             # (replace instead of match, to handle nested)
             line.content = re.sub(
