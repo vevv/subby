@@ -96,7 +96,7 @@ class WebVTTConverter(BaseConverter):
                     start=timedelta_from_timestamp(start),
                     end=timedelta_from_timestamp(end),
                     content='',
-                    proprietary=position  # misuse this field to temporarily hold pos  # pyright: ignore[reportArgumentType]
+                    proprietary=position or 100  # misuse this field to temporarily hold pos  # pyright: ignore[reportArgumentType]
                 ))
                 looking_for_text = True
                 line_number += 1
