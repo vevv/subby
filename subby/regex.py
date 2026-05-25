@@ -2,14 +2,14 @@ TAGS = r'[<{][/\\]?[a-z0-9.]+[}>]'
 POSITION_TAGS = r'^{\\an[0-9]}'
 FRONT_OPTIONAL_TAGS_WITH_HYPHEN = rf'^\s*({TAGS})?\s*(-)?\s*({TAGS})?\s*'
 TIME_LOOKAHEAD = r'(?![0-9]{2})'
+DESCRIPTION_BRACKET = r'\[(?!bleep\])(?:[^\]]|\s)*\]'
 
-SPEAKER = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(Mc[A-Z][a-zA-Z]+|[A-Z0-9\&\[\]\.#\' ]+\s*|[A-Z][a-z]+):{TIME_LOOKAHEAD} ?'
+SPEAKER = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(Mc[A-Z][a-zA-Z]+|[A-Z0-9\&\[\]\.#\' ]+(?:{DESCRIPTION_BRACKET})?\s*|[A-Z][a-z]+):{TIME_LOOKAHEAD} ?'
 SPEAKER_PARENTHESES = rf'({FRONT_OPTIONAL_TAGS_WITH_HYPHEN})\s*(?:[A-Z0-9\&\[\]\.#\' ]+\s*|[A-Z][a-z]+)(?: \([a-zA-Z ]+\)): ?'
 
 FRONT_NOTES = r'(?:♪+\s+)'
 BACK_NOTES = r'(?:\s+♪+)'
 
-DESCRIPTION_BRACKET = r'\[(?!bleep\])(?:[^\]]|\s)*\]'
 DESCRIPTION_PARENTHESES = r'\((?!bleep\))(?:[^\)]|\s)*\)'
 FULL_LINE_DESCIRPTION_BRACKET = rf'^-?\s*{FRONT_NOTES}?\[[^\]]+\]{BACK_NOTES}?$'
 NEW_LINE_DESCRIPTION_BRACKET = rf'^(?:{TAGS})?-?\s*{FRONT_NOTES}?{DESCRIPTION_BRACKET}(?:{TAGS})?{BACK_NOTES}?$'

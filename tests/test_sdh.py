@@ -54,14 +54,19 @@ HERE. IN THIS OFFICE ARE A LOT
 
 12
 00:01:45,685 --> 00:01:46,769
->>'''
+>>
+
+13
+00:02:00,000 --> 00:02:15,000
+911 DISPATCHER [ON
+PHONE]: <i>The Belmar Bridge</i>'''
 
 
 def test_sdh_stripping():
     stripper = SDHStripper()
     fixer = CommonIssuesFixer()  # Fixer is currently necessary to fix some of the issues from stripping
     srt, _ = fixer.from_srt(stripper.from_string(EXAMPLE_1)[0])
-    assert len(srt) == 8
+    assert len(srt) == 9
     assert srt[0].content == '<i>"W" who?</i>'
     assert srt[1].content == '- ♪ Hey, boo ♪\n- ♪ Hey, boo ♪'
     assert srt[2].content == "It's zoo time!"
@@ -70,6 +75,7 @@ def test_sdh_stripping():
     assert srt[5].content == 'I did on magnets this summer.'
     assert srt[6].content == '- Boo!\n- No, thanks.'
     assert srt[7].content == 'SO THIS IS MY HOME OFFICE\nHERE. IN THIS OFFICE ARE A LOT'
+    assert srt[8].content == '<i>The Belmar Bridge</i>'
 
 
 if __name__ == "__main__":
