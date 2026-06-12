@@ -49,6 +49,11 @@ class SDHStripper(BaseProcessor):
         """Removes line descriptions taking up an entire line break"""
         for line in srt:
             position = re.match(Regex.POSITION_TAGS, line.content.strip())
+
+            # Preserve the speaker hyphen when an SDH-only line introduces dialogue
+            hyphenated_description = rf'(^|\n)(?:{Regex.TAGS})?-\s*{Regex.DESCRIPTION_BRACKET}\n(?!\s*(?:{Regex.TAGS})?-)'
+            line.content = re.sub(hyphenated_description, r'\1- ', line.content)
+
             for regex in (Regex.NEW_LINE_DESCRIPTION_BRACKET, Regex.NEW_LINE_DESCRIPTION_PARENTHESES):
                 line.content = re.sub(regex, r'', line.content, flags=re.M).strip()
 

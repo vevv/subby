@@ -81,8 +81,22 @@ class WebVTTConverter(BaseConverter):
 
             # Check for time line
             elif ' --> ' in line:
+                # Time line should always cause a line split, even without a separating new line
+                if looking_for_text and text and srt:
+                    srt[-1].content = '\n'.join(text)
+                    text = []
+
                 parts = line.strip().split()
-                position = self._get_position([p for p in parts[3:] if ':' in p])
+                inline_text = ''
+
+                # Handle misformed lines (likely a poor SRT->VTT conversion)
+                # e.g. 637 01:11:38,875 --> 01:11:41,500. Capita.
+                # Checks line number to avoid catching false positives
+                if parts[0].isdigit() and int(parts[0]) == line_number:
+                    parts = parts[1:]
+                    inline_text = ' '.join(parts[3:])
+
+                position = self._get_position([p for p in parts[3:] if ':' in p and '-->' not in p])
 
                 start, _, end, *_ = parts
                 # Fix short timecodes (no hour)
@@ -93,11 +107,12 @@ class WebVTTConverter(BaseConverter):
 
                 srt.append(Subtitle(
                     index=line_number,
-                    start=timedelta_from_timestamp(start),
-                    end=timedelta_from_timestamp(end),
-                    content='',
+                    start=timedelta_from_timestamp(start.strip('.')),
+                    end=timedelta_from_timestamp(end.strip('.')),
+                    content=inline_text,
                     proprietary=position or 100  # misuse this field to temporarily hold pos  # pyright: ignore[reportArgumentType]
                 ))
+
                 looking_for_text = True
                 line_number += 1
 
@@ -157,7 +172,7 @@ class WebVTTConverter(BaseConverter):
             return None
 
         position = None
-        for key, val in (pos.split(':') for pos in cue_settings):
+        for key, val in (pos.split(':') for pos in cue_settings if pos.count(':') == 1):
             if key == 'line' and val and (val := val.split(',')[0])[-1] == '%':
                 position = float(val[:-1])
                 break

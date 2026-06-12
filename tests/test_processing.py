@@ -103,8 +103,11 @@ Test line2</i>
 00:18:00,000 --> 00:18:01,000
 <i>   
 test
-</i>'''
+</i>
 
+5
+00:20:00,000 --> 00:20:01,000
+- Certainly<i>.</i> Right away.'''
 
 GAP_REMOVAL_EXAMPLE = '''1
 00:19:00,000 --> 00:19:00,100
@@ -201,6 +204,7 @@ def test_tag_corrections():
     assert srt[1].content == "{\\an8}<i>Test line1\nTest line2</i>"
     assert srt[2].content == "test"
     assert srt[3].content == "<i>test</i>"
+    assert srt[4].content == "- Certainly. Right away."
 
 
 # Test 83 ms gap removal

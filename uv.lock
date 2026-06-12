@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-04-24T15:43:34.6668167Z"
+exclude-newer = "2026-06-05T13:21:19.5734492Z"
 exclude-newer-span = "P7D"
 
 [[package]]
@@ -366,7 +366,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/66/b7/4a1bc231e0681ebf3
 
 [[package]]
 name = "subby"
-version = "0.3.27"
+version = "0.3.31"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
