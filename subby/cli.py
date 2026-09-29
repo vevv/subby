@@ -92,7 +92,7 @@ def convert(
         elif b"vttc" in data:
             log.info("Subtitle format: WVTT (WebVTT in MP4)")
             converter = WVTTConverter()
-    elif b"<SAMI>" in data:
+    elif b"<sami>" in data.lower():
         log.info("Subtitle format: SAMI")
         converter = SAMIConverter()
     elif b"</tt>" in data or b"</tt:tt>" in data:
