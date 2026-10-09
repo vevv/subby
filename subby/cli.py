@@ -195,7 +195,7 @@ def strip_sdh(ctx: click.Context):
     processed_srt, status = processor.from_file(file, language=ctx.parent.params["language"])
     log.info(f"Processed subtitle {['but no SDH descriptions were found...', 'and removed SDH!'][status]}")
 
-    if not ctx.parent.params["no_post_processing"]:
+    if status and not ctx.parent.params["no_post_processing"]:
         processor = CommonIssuesFixer()
         processor.remove_gaps = not ctx.parent.params["keep_short_gaps"]
         processed_srt, fix_status = processor.from_srt(processed_srt, language=ctx.parent.params["language"])
