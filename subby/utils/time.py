@@ -8,7 +8,7 @@ from srt import Subtitle
 
 def timestamp_from_ms(duration: float | int) -> str:
     """Returns a formatted timestamp from milliseconds"""
-    seconds, milliseconds = divmod(float(duration), 1000)
+    seconds, milliseconds = divmod(duration, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     return "%02d:%02d:%02d.%03d" % (hours, minutes, seconds, milliseconds)
