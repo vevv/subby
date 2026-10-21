@@ -129,6 +129,7 @@ STYLE
 <c.bold.italics>Italicized text</c>
 '''
 
+
 INLINE_ARROW_TEST = b'''
 00:00:01.000 --> 00:00:05.000
 - Value change: yes --> no.

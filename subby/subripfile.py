@@ -19,6 +19,7 @@ class SubRipFile(UserList):
     def clean_indexes(self):
         """Sorts and reindexes lines"""
         self.data = list(srt.sort_and_reindex(self.data))
+        return self
 
     def sort(self, *args, **kwargs):
         """Sorts lines"""
@@ -28,11 +29,15 @@ class SubRipFile(UserList):
         for i, line in enumerate(self.data, 1):
             line.index = i
 
+        return self
+
     def offset(self, offset: timedelta):
         """Shift all lines forwards by a given offset"""
         for line in self.data:
             line.start += offset
             line.end += offset
+
+        return self
 
     def export(self, eol: str | None = None) -> str:
         """Exports subtitle as text"""
@@ -43,7 +48,25 @@ class SubRipFile(UserList):
         with path.open(mode='wb') as fp:
             fp.write(srt.compose(self.data, eol=eol).encode(encoding))
 
+    def copy(self):
+        """Returns a copy with separate Subtitle objects"""
+        return self.__copy__()
+
+    def __copy__(self):
+        return SubRipFile([
+            srt.Subtitle(line.index, line.start, line.end, line.content, line.proprietary)
+            for line in self
+        ])
+
+    def __deepcopy__(self, memo=None):
+        return self.__copy__()
+
     def __eq__(self, other):
         if not isinstance(other, SubRipFile):
             raise NotImplementedError
-        return self.export(eol='\n') == other.export(eol='\n')
+        if len(self.data) != len(other.data):
+            return False
+        return all(a == b for a, b in zip(self.data, other.data))
+
+    def __iter__(self):
+        return iter(self.data)
