@@ -42,7 +42,7 @@ def combine_timecodes(srt: SubRipFile, remove_gaps: bool) -> SubRipFile:
             last.end = line.end
         # Merge lines with less than 2 frames of gap and same text
         # to avoid duplicating lines as we remove gaps later
-        elif 0 < gap <= 85 and line.content.startswith(last.content) and remove_gaps:
+        elif 0 < gap <= 85 and line.content == last.content and remove_gaps:
             last.end = line.end
             last.content = line.content
         # Fix overlapping times
