@@ -18,7 +18,7 @@ class SubRipFile(UserList):
 
     def clean_indexes(self):
         """Sorts and reindexes lines"""
-        self.data = list(srt.sort_and_reindex(self.data))
+        self.data = list(srt.sort_and_reindex(self.data, in_place=True))
         return self
 
     def sort(self, *args, **kwargs):
