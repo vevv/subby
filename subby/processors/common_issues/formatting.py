@@ -7,7 +7,6 @@ from subby import regex as Regex
 SPACES_INSIDE_BRACKETS = re.compile(r'\( (.*) \)')
 BR_TAGS = re.compile(r'<br ?\/?>')
 JUNK_LINE = re.compile(r'^(?:\.|-|</?i>|\{\\an8\})?\s*$', re.M)
-SINGLE_CHARACTER_LINE = re.compile(r'^\w$')
 MISSING_SPACE_AFTER_ELLIPSIS = re.compile(r'([a-z])(\.\.\.)([a-zA-Z][^.])')
 MISSING_SPACE_AFTER_CLOSING_TAG = re.compile(r'(</[a-z]>)(\w)')
 MISSING_SPACE_AFTER_COMMA = re.compile(r'([a-z]),([a-zA-Z])')
@@ -30,9 +29,6 @@ def fix_formatting(line: str) -> str:
 
     # Remove empty lines (whitespace, optionally ".", "-", "</?i>" or "{\an8}")
     line = JUNK_LINE.sub('', line)
-
-    # Remove lines consisting only of a single character or digit
-    line = SINGLE_CHARACTER_LINE.sub('', line) if len(line) < 2 else line
 
     # Adds missing spaces after "...", commas, and tags
     line = MISSING_SPACE_AFTER_ELLIPSIS.sub(r'\1\2 \3', line) if '...' in line else line
