@@ -106,8 +106,7 @@ def convert(
         converter = BilibiliJSONConverter()
 
     if not converter:
-        log.error("Subtitle format was unrecognized...")
-        return
+        raise click.ClickException("Subtitle format was unrecognized...")
 
     srt = converter.from_file(file)
     log.info("Converted subtitle to SubRip (SRT)")
